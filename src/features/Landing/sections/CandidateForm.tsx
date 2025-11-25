@@ -23,6 +23,17 @@ import { toast } from "sonner";
 import type { SubmitCandidateFormResult } from "../actions/submitCandidateForm";
 import { ZodError } from "zod";
 import { UploadCV } from "../components/UploadCV";
+import {
+  Dialog,
+  DialogPopup,
+  DialogTrigger,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogClose,
+  DialogContent,
+} from "@/core/components/shadcn/dialog";
 
 const sectoresExperiencia = [
   "Tecnología",
@@ -42,6 +53,7 @@ export default function CandidateForm() {
   const [currentPart, setCurrentPart] = useState<0 | 1 | 2>(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [cvFiles, setCvFiles] = useState<File[]>([]);
+  const [showSuccessDialog, setShowSuccessDialog] = useState<boolean>(false);
 
   const form = useForm({
     defaultValues: {
@@ -88,7 +100,8 @@ export default function CandidateForm() {
 
         if (result.success) {
           // Mostrar mensaje de éxito
-          toast.success(result.message);
+          //toast.success(result.message);
+          setShowSuccessDialog(true);
 
           // Limpiar el formulario después del envío exitoso
           form.reset();
@@ -227,531 +240,584 @@ export default function CandidateForm() {
   };
 
   return (
-    <section id="contact" className="flex flex-col items-center mt-20 mb-20">
-      <motion.div
-        className="relative max-w-3xl w-full mx-auto"
-        initial={{ opacity: 0, y: 50 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ type: "spring", stiffness: 320, damping: 70, mass: 1 }}
-      >
-        <div className="absolute pointer-events-none top-10 -z-1 left-20 size-64 bg-gradient-to-br from-[#536DFF] to-[#4F39F6]/60 blur-[180px]"></div>
-        <div className="absolute pointer-events-none bottom-10 -z-1 right-20 size-64 bg-gradient-to-br from-[#536DFF] to-[#4F39F6]/60 blur-[180px]"></div>
+    <>
+      <section id="contact" className="flex flex-col items-center mt-20 mb-20">
+        <motion.div
+          className="relative max-w-3xl w-full mx-auto"
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ type: "spring", stiffness: 320, damping: 70, mass: 1 }}
+        >
+          <div className="absolute pointer-events-none top-10 -z-1 left-20 size-64 bg-gradient-to-br from-[#536DFF] to-[#4F39F6]/60 blur-[180px]"></div>
+          <div className="absolute pointer-events-none bottom-10 -z-1 right-20 size-64 bg-gradient-to-br from-[#536DFF] to-[#4F39F6]/60 blur-[180px]"></div>
 
-        <div className="relative border border-indigo-900 bg-gradient-to-br from-[#401B98]/5 to-[#180027]/10 rounded-3xl p-6 md:p-10 text-white">
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              form.handleSubmit();
-            }}
-          >
-            <AnimatePresence mode="wait">
-              {currentPart === 0 && (
-                <motion.div
-                  key="part0"
-                  initial={{ opacity: 0, x: -50 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 50 }}
-                  transition={{ duration: 0.3 }}
-                  className="space-y-6"
-                >
-                  <div className="mb-6">
-                    <p className="text-indigo-200 text-xs uppercase tracking-[0.4em] mb-2">
-                      Paso 0
-                    </p>
-                    <h2 className="text-2xl md:text-3xl font-semibold mb-3 bg-gradient-to-r from-white to-[#b6abff] text-transparent bg-clip-text">
-                      Sube tu CV
-                    </h2>
-                    <p className="text-slate-400 text-sm md:text-base">
-                      Empecemos cargando tu CV para compartirnos tu experiencia
-                      profesional.
-                    </p>
-                  </div>
+          <div className="relative border border-indigo-900 bg-gradient-to-br from-[#401B98]/5 to-[#180027]/10 rounded-3xl p-6 md:p-10 text-white">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                form.handleSubmit();
+              }}
+            >
+              <AnimatePresence mode="wait">
+                {currentPart === 0 && (
+                  <motion.div
+                    key="part0"
+                    initial={{ opacity: 0, x: -50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 50 }}
+                    transition={{ duration: 0.3 }}
+                    className="space-y-6"
+                  >
+                    <div className="mb-6">
+                      <p className="text-indigo-200 text-xs uppercase tracking-[0.4em] mb-2">
+                        Paso 0
+                      </p>
+                      <h2 className="text-2xl md:text-3xl font-semibold mb-3 bg-gradient-to-r from-white to-[#b6abff] text-transparent bg-clip-text">
+                        Sube tu CV
+                      </h2>
+                      <p className="text-slate-400 text-sm md:text-base">
+                        Empecemos cargando tu CV para compartirnos tu
+                        experiencia profesional.
+                      </p>
+                    </div>
 
-                  <UploadCV files={cvFiles} onFilesChange={setCvFiles} />
+                    <UploadCV files={cvFiles} onFilesChange={setCvFiles} />
 
-                  <div className="flex justify-end mt-8">
-                    <Button
-                      type="button"
-                      onClick={handleCvContinue}
-                      className="bg-indigo-600 hover:bg-indigo-700 text-white border-indigo-600"
-                    >
-                      Continuar con tus datos
-                      <ArrowRight className="size-4" />
-                    </Button>
-                  </div>
-                </motion.div>
-              )}
+                    <div className="flex justify-end mt-8">
+                      <Button
+                        type="button"
+                        onClick={handleCvContinue}
+                        className="bg-indigo-600 hover:bg-indigo-700 text-white border-indigo-600"
+                      >
+                        Continuar con tus datos
+                        <ArrowRight className="size-4" />
+                      </Button>
+                    </div>
+                  </motion.div>
+                )}
 
-              {currentPart === 1 && (
-                <motion.div
-                  key="part1"
-                  initial={{ opacity: 0, x: 50 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -50 }}
-                  transition={{ duration: 0.3 }}
-                  className="space-y-6"
-                >
-                  <div className="mb-6">
-                    <p className="text-indigo-200 text-xs uppercase tracking-[0.4em] mb-2">
-                      Paso 1
-                    </p>
-                    <h2 className="text-2xl md:text-3xl font-semibold mb-2 bg-gradient-to-r from-white to-[#b6abff] text-transparent bg-clip-text">
-                      Cuéntanos sobre ti
-                    </h2>
-                    <p className="text-slate-400 text-sm md:text-base">
-                      Necesitamos algunos datos básicos para conocerte mejor
-                    </p>
-                  </div>
+                {currentPart === 1 && (
+                  <motion.div
+                    key="part1"
+                    initial={{ opacity: 0, x: 50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -50 }}
+                    transition={{ duration: 0.3 }}
+                    className="space-y-6"
+                  >
+                    <div className="mb-6">
+                      <p className="text-indigo-200 text-xs uppercase tracking-[0.4em] mb-2">
+                        Paso 1
+                      </p>
+                      <h2 className="text-2xl md:text-3xl font-semibold mb-2 bg-gradient-to-r from-white to-[#b6abff] text-transparent bg-clip-text">
+                        Cuéntanos sobre ti
+                      </h2>
+                      <p className="text-slate-400 text-sm md:text-base">
+                        Necesitamos algunos datos básicos para conocerte mejor
+                      </p>
+                    </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <form.Field name="nombre">
-                      {(field) => (
-                        <div className="space-y-2 md:col-span-2">
-                          <Label
-                            htmlFor={field.name}
-                            className="text-slate-200"
-                          >
-                            Nombre completo *
-                          </Label>
-                          <Input
-                            id={field.name}
-                            name={field.name}
-                            value={field.state.value}
-                            onChange={(e) => field.handleChange(e.target.value)}
-                            onBlur={field.handleBlur}
-                            className="bg-slate-900/50 border-slate-600 text-white placeholder:text-slate-500 focus-visible:border-indigo-400 focus-visible:ring-indigo-400/20"
-                            placeholder="Tu nombre completo"
-                            aria-invalid={field.state.meta.errors.length > 0}
-                          />
-                          {field.state.meta.errors.length > 0 && (
-                            <p className="text-red-400 text-xs">
-                              {field.state.meta.errors[0]}
-                            </p>
-                          )}
-                        </div>
-                      )}
-                    </form.Field>
-
-                    <form.Field name="municipioAlcaldia">
-                      {(field) => (
-                        <div className="space-y-2">
-                          <Label
-                            htmlFor={field.name}
-                            className="text-slate-200"
-                          >
-                            Municipio o Alcaldía *
-                          </Label>
-                          <Input
-                            id={field.name}
-                            name={field.name}
-                            value={field.state.value}
-                            onChange={(e) => field.handleChange(e.target.value)}
-                            onBlur={field.handleBlur}
-                            className="bg-slate-900/50 border-slate-600 text-white placeholder:text-slate-500 focus-visible:border-indigo-400 focus-visible:ring-indigo-400/20"
-                            placeholder="Ej: Benito Juárez"
-                            aria-invalid={field.state.meta.errors.length > 0}
-                          />
-                          {field.state.meta.errors.length > 0 && (
-                            <p className="text-red-400 text-xs">
-                              {field.state.meta.errors[0]}
-                            </p>
-                          )}
-                        </div>
-                      )}
-                    </form.Field>
-
-                    <form.Field name="ciudad">
-                      {(field) => (
-                        <div className="space-y-2">
-                          <Label
-                            htmlFor={field.name}
-                            className="text-slate-200"
-                          >
-                            Ciudad *
-                          </Label>
-                          <Input
-                            id={field.name}
-                            name={field.name}
-                            value={field.state.value}
-                            onChange={(e) => field.handleChange(e.target.value)}
-                            onBlur={field.handleBlur}
-                            className="bg-slate-900/50 border-slate-600 text-white placeholder:text-slate-500 focus-visible:border-indigo-400 focus-visible:ring-indigo-400/20"
-                            placeholder="Ej: Ciudad de México"
-                            aria-invalid={field.state.meta.errors.length > 0}
-                          />
-                          {field.state.meta.errors.length > 0 && (
-                            <p className="text-red-400 text-xs">
-                              {field.state.meta.errors[0]}
-                            </p>
-                          )}
-                        </div>
-                      )}
-                    </form.Field>
-
-                    <form.Field name="telefono">
-                      {(field) => (
-                        <div className="space-y-2">
-                          <Label
-                            htmlFor={field.name}
-                            className="text-slate-200"
-                          >
-                            Teléfono *
-                          </Label>
-                          <Input
-                            id={field.name}
-                            name={field.name}
-                            type="tel"
-                            value={field.state.value}
-                            onChange={(e) => field.handleChange(e.target.value)}
-                            onBlur={field.handleBlur}
-                            className="bg-slate-900/50 border-slate-600 text-white placeholder:text-slate-500 focus-visible:border-indigo-400 focus-visible:ring-indigo-400/20"
-                            placeholder="+52 55 1234 5678"
-                            aria-invalid={field.state.meta.errors.length > 0}
-                          />
-                          {field.state.meta.errors.length > 0 && (
-                            <p className="text-red-400 text-xs">
-                              {field.state.meta.errors[0]}
-                            </p>
-                          )}
-                        </div>
-                      )}
-                    </form.Field>
-
-                    <form.Field name="correo">
-                      {(field) => (
-                        <div className="space-y-2">
-                          <Label
-                            htmlFor={field.name}
-                            className="text-slate-200"
-                          >
-                            Correo electrónico *
-                          </Label>
-                          <Input
-                            id={field.name}
-                            name={field.name}
-                            type="email"
-                            value={field.state.value}
-                            onChange={(e) => field.handleChange(e.target.value)}
-                            onBlur={field.handleBlur}
-                            className="bg-slate-900/50 border-slate-600 text-white placeholder:text-slate-500 focus-visible:border-indigo-400 focus-visible:ring-indigo-400/20"
-                            placeholder="tu@email.com"
-                            aria-invalid={field.state.meta.errors.length > 0}
-                          />
-                          {field.state.meta.errors.length > 0 && (
-                            <p className="text-red-400 text-xs">
-                              {field.state.meta.errors[0]}
-                            </p>
-                          )}
-                        </div>
-                      )}
-                    </form.Field>
-
-                    <form.Field name="ultimoSector">
-                      {(field) => (
-                        <div className="space-y-2 md:col-span-2">
-                          <Label
-                            htmlFor={field.name}
-                            className="text-slate-200"
-                          >
-                            Último sector de experiencia *
-                          </Label>
-                          <Select
-                            value={field.state.value}
-                            onValueChange={(value) => field.handleChange(value)}
-                          >
-                            <SelectTrigger
-                              id={field.name}
-                              className="bg-slate-900/50 border-slate-600 text-white focus:border-indigo-400 focus:ring-indigo-400/20"
-                              aria-invalid={field.state.meta.errors.length > 0}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <form.Field name="nombre">
+                        {(field) => (
+                          <div className="space-y-2 md:col-span-2">
+                            <Label
+                              htmlFor={field.name}
+                              className="text-slate-200"
                             >
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent className="bg-slate-900 border-slate-600">
-                              {sectoresExperiencia.map((sector) => (
+                              Nombre completo *
+                            </Label>
+                            <Input
+                              id={field.name}
+                              name={field.name}
+                              value={field.state.value}
+                              onChange={(e) =>
+                                field.handleChange(e.target.value)
+                              }
+                              onBlur={field.handleBlur}
+                              className="bg-slate-900/50 border-slate-600 text-white placeholder:text-slate-500 focus-visible:border-indigo-400 focus-visible:ring-indigo-400/20"
+                              placeholder="Tu nombre completo"
+                              aria-invalid={field.state.meta.errors.length > 0}
+                            />
+                            {field.state.meta.errors.length > 0 && (
+                              <p className="text-red-400 text-xs">
+                                {field.state.meta.errors[0]}
+                              </p>
+                            )}
+                          </div>
+                        )}
+                      </form.Field>
+
+                      <form.Field name="municipioAlcaldia">
+                        {(field) => (
+                          <div className="space-y-2">
+                            <Label
+                              htmlFor={field.name}
+                              className="text-slate-200"
+                            >
+                              Municipio o Alcaldía *
+                            </Label>
+                            <Input
+                              id={field.name}
+                              name={field.name}
+                              value={field.state.value}
+                              onChange={(e) =>
+                                field.handleChange(e.target.value)
+                              }
+                              onBlur={field.handleBlur}
+                              className="bg-slate-900/50 border-slate-600 text-white placeholder:text-slate-500 focus-visible:border-indigo-400 focus-visible:ring-indigo-400/20"
+                              placeholder="Ej: Benito Juárez"
+                              aria-invalid={field.state.meta.errors.length > 0}
+                            />
+                            {field.state.meta.errors.length > 0 && (
+                              <p className="text-red-400 text-xs">
+                                {field.state.meta.errors[0]}
+                              </p>
+                            )}
+                          </div>
+                        )}
+                      </form.Field>
+
+                      <form.Field name="ciudad">
+                        {(field) => (
+                          <div className="space-y-2">
+                            <Label
+                              htmlFor={field.name}
+                              className="text-slate-200"
+                            >
+                              Ciudad *
+                            </Label>
+                            <Input
+                              id={field.name}
+                              name={field.name}
+                              value={field.state.value}
+                              onChange={(e) =>
+                                field.handleChange(e.target.value)
+                              }
+                              onBlur={field.handleBlur}
+                              className="bg-slate-900/50 border-slate-600 text-white placeholder:text-slate-500 focus-visible:border-indigo-400 focus-visible:ring-indigo-400/20"
+                              placeholder="Ej: Ciudad de México"
+                              aria-invalid={field.state.meta.errors.length > 0}
+                            />
+                            {field.state.meta.errors.length > 0 && (
+                              <p className="text-red-400 text-xs">
+                                {field.state.meta.errors[0]}
+                              </p>
+                            )}
+                          </div>
+                        )}
+                      </form.Field>
+
+                      <form.Field name="telefono">
+                        {(field) => (
+                          <div className="space-y-2">
+                            <Label
+                              htmlFor={field.name}
+                              className="text-slate-200"
+                            >
+                              Teléfono *
+                            </Label>
+                            <Input
+                              id={field.name}
+                              name={field.name}
+                              type="tel"
+                              value={field.state.value}
+                              onChange={(e) =>
+                                field.handleChange(e.target.value)
+                              }
+                              onBlur={field.handleBlur}
+                              className="bg-slate-900/50 border-slate-600 text-white placeholder:text-slate-500 focus-visible:border-indigo-400 focus-visible:ring-indigo-400/20"
+                              placeholder="+52 55 1234 5678"
+                              aria-invalid={field.state.meta.errors.length > 0}
+                            />
+                            {field.state.meta.errors.length > 0 && (
+                              <p className="text-red-400 text-xs">
+                                {field.state.meta.errors[0]}
+                              </p>
+                            )}
+                          </div>
+                        )}
+                      </form.Field>
+
+                      <form.Field name="correo">
+                        {(field) => (
+                          <div className="space-y-2">
+                            <Label
+                              htmlFor={field.name}
+                              className="text-slate-200"
+                            >
+                              Correo electrónico *
+                            </Label>
+                            <Input
+                              id={field.name}
+                              name={field.name}
+                              type="email"
+                              value={field.state.value}
+                              onChange={(e) =>
+                                field.handleChange(e.target.value)
+                              }
+                              onBlur={field.handleBlur}
+                              className="bg-slate-900/50 border-slate-600 text-white placeholder:text-slate-500 focus-visible:border-indigo-400 focus-visible:ring-indigo-400/20"
+                              placeholder="tu@email.com"
+                              aria-invalid={field.state.meta.errors.length > 0}
+                            />
+                            {field.state.meta.errors.length > 0 && (
+                              <p className="text-red-400 text-xs">
+                                {field.state.meta.errors[0]}
+                              </p>
+                            )}
+                          </div>
+                        )}
+                      </form.Field>
+
+                      <form.Field name="ultimoSector">
+                        {(field) => (
+                          <div className="space-y-2 md:col-span-2">
+                            <Label
+                              htmlFor={field.name}
+                              className="text-slate-200"
+                            >
+                              Último sector de experiencia *
+                            </Label>
+                            <Select
+                              value={field.state.value}
+                              onValueChange={(value) =>
+                                field.handleChange(value)
+                              }
+                            >
+                              <SelectTrigger
+                                id={field.name}
+                                className="bg-slate-900/50 border-slate-600 text-white focus:border-indigo-400 focus:ring-indigo-400/20"
+                                aria-invalid={
+                                  field.state.meta.errors.length > 0
+                                }
+                              >
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent className="bg-slate-900 border-slate-600">
+                                {sectoresExperiencia.map((sector) => (
+                                  <SelectItem
+                                    key={sector}
+                                    value={sector}
+                                    className="text-white focus:bg-indigo-600/20 hover:text-white"
+                                  >
+                                    {sector}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            {field.state.meta.errors.length > 0 && (
+                              <p className="text-red-400 text-xs">
+                                {field.state.meta.errors[0]}
+                              </p>
+                            )}
+                          </div>
+                        )}
+                      </form.Field>
+                    </div>
+
+                    <div className="flex justify-between mt-8">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={handleBack}
+                        className="border-slate-400 hover:text-gray-50 text-black hover:bg-white/10"
+                      >
+                        <ArrowLeft className="size-4" />
+                        Atrás
+                      </Button>
+                      <Button
+                        type="button"
+                        onClick={handleContinue}
+                        className="bg-indigo-600 hover:bg-indigo-700 text-white border-indigo-600"
+                      >
+                        Continuar
+                        <ArrowRight className="size-4" />
+                      </Button>
+                    </div>
+                  </motion.div>
+                )}
+
+                {currentPart === 2 && (
+                  <motion.div
+                    key="part2"
+                    initial={{ opacity: 0, x: 50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -50 }}
+                    transition={{ duration: 0.3 }}
+                    className="space-y-6"
+                  >
+                    <motion.div
+                      initial={{ opacity: 0, y: -20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.2 }}
+                      className="mb-6"
+                    >
+                      <p className="text-indigo-200 text-xs uppercase tracking-[0.4em] mb-2">
+                        Paso 2
+                      </p>
+                      <h3 className="text-xl md:text-2xl font-semibold mb-2 text-indigo-300">
+                        ¡Ya casi terminamos! Solo unos cuantos datos más
+                      </h3>
+                      <p className="text-slate-400 text-sm md:text-base">
+                        Información sobre tu experiencia profesional
+                      </p>
+                    </motion.div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <form.Field name="ultimoPuesto">
+                        {(field) => (
+                          <div className="space-y-2">
+                            <Label
+                              htmlFor={field.name}
+                              className="text-slate-200"
+                            >
+                              Último puesto *
+                            </Label>
+                            <Input
+                              id={field.name}
+                              name={field.name}
+                              value={field.state.value}
+                              onChange={(e) =>
+                                field.handleChange(e.target.value)
+                              }
+                              onBlur={field.handleBlur}
+                              className="bg-slate-900/50 border-slate-600 text-white placeholder:text-slate-500 focus-visible:border-indigo-400 focus-visible:ring-indigo-400/20"
+                              placeholder="Ej: Senior Developer"
+                              aria-invalid={field.state.meta.errors.length > 0}
+                            />
+                            {field.state.meta.errors.length > 0 && (
+                              <p className="text-red-400 text-xs">
+                                {field.state.meta.errors[0]}
+                              </p>
+                            )}
+                          </div>
+                        )}
+                      </form.Field>
+
+                      <form.Field name="puestoInteres">
+                        {(field) => (
+                          <div className="space-y-2">
+                            <Label
+                              htmlFor={field.name}
+                              className="text-slate-200"
+                            >
+                              Puesto de interés *
+                            </Label>
+                            <Input
+                              id={field.name}
+                              name={field.name}
+                              value={field.state.value}
+                              onChange={(e) =>
+                                field.handleChange(e.target.value)
+                              }
+                              onBlur={field.handleBlur}
+                              className="bg-slate-900/50 border-slate-600 text-white placeholder:text-slate-500 focus-visible:border-indigo-400 focus-visible:ring-indigo-400/20"
+                              placeholder="Ej: Tech Lead"
+                              aria-invalid={field.state.meta.errors.length > 0}
+                            />
+                            {field.state.meta.errors.length > 0 && (
+                              <p className="text-red-400 text-xs">
+                                {field.state.meta.errors[0]}
+                              </p>
+                            )}
+                          </div>
+                        )}
+                      </form.Field>
+
+                      <form.Field name="salarioDeseado">
+                        {(field) => (
+                          <div className="space-y-2">
+                            <Label
+                              htmlFor={field.name}
+                              className="text-slate-200"
+                            >
+                              Salario deseado (MXN) *
+                            </Label>
+                            <Input
+                              id={field.name}
+                              name={field.name}
+                              type="number"
+                              value={field.state.value || ""}
+                              onChange={(e) =>
+                                field.handleChange(
+                                  e.target.value
+                                    ? parseFloat(e.target.value)
+                                    : 0
+                                )
+                              }
+                              onBlur={field.handleBlur}
+                              className="bg-slate-900/50 border-slate-600 text-white placeholder:text-slate-500 focus-visible:border-indigo-400 focus-visible:ring-indigo-400/20"
+                              placeholder="50000"
+                              aria-invalid={field.state.meta.errors.length > 0}
+                            />
+                            {field.state.meta.errors.length > 0 && (
+                              <p className="text-red-400 text-xs">
+                                {field.state.meta.errors[0]}
+                              </p>
+                            )}
+                          </div>
+                        )}
+                      </form.Field>
+
+                      <form.Field name="titulado">
+                        {(field) => (
+                          <div className="space-y-2">
+                            <Label
+                              htmlFor={field.name}
+                              className="text-slate-200"
+                            >
+                              ¿Estás titulado? *
+                            </Label>
+                            <Select
+                              value={field.state.value}
+                              onValueChange={(value) =>
+                                field.handleChange(value as "Sí" | "No")
+                              }
+                            >
+                              <SelectTrigger
+                                id={field.name}
+                                className="bg-slate-900/50 border-slate-600 text-white focus:border-indigo-400 focus:ring-indigo-400/20"
+                                aria-invalid={
+                                  field.state.meta.errors.length > 0
+                                }
+                              >
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent className="bg-slate-900 border-slate-600">
                                 <SelectItem
-                                  key={sector}
-                                  value={sector}
+                                  value="Sí"
                                   className="text-white focus:bg-indigo-600/20 hover:text-white"
                                 >
-                                  {sector}
+                                  Sí
                                 </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          {field.state.meta.errors.length > 0 && (
-                            <p className="text-red-400 text-xs">
-                              {field.state.meta.errors[0]}
-                            </p>
-                          )}
-                        </div>
-                      )}
-                    </form.Field>
-                  </div>
+                                <SelectItem
+                                  value="No"
+                                  className="text-white focus:bg-indigo-600/20 hover:text-white"
+                                >
+                                  No
+                                </SelectItem>
+                              </SelectContent>
+                            </Select>
+                            {field.state.meta.errors.length > 0 && (
+                              <p className="text-red-400 text-xs">
+                                {field.state.meta.errors[0]}
+                              </p>
+                            )}
+                          </div>
+                        )}
+                      </form.Field>
 
-                  <div className="flex justify-between mt-8">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={handleBack}
-                      className="border-slate-400 hover:text-gray-50 text-black hover:bg-white/10"
-                    >
-                      <ArrowLeft className="size-4" />
-                      Atrás
-                    </Button>
-                    <Button
-                      type="button"
-                      onClick={handleContinue}
-                      className="bg-indigo-600 hover:bg-indigo-700 text-white border-indigo-600"
-                    >
-                      Continuar
-                      <ArrowRight className="size-4" />
-                    </Button>
-                  </div>
-                </motion.div>
-              )}
+                      <form.Field name="ingles">
+                        {(field) => (
+                          <div className="space-y-2 md:col-span-2">
+                            <Label
+                              htmlFor={field.name}
+                              className="text-slate-200"
+                            >
+                              Nivel de inglés *
+                            </Label>
+                            <Select
+                              value={field.state.value}
+                              onValueChange={(value) =>
+                                field.handleChange(
+                                  value as "Avanzado" | "Intermedio" | "No"
+                                )
+                              }
+                            >
+                              <SelectTrigger
+                                id={field.name}
+                                className="bg-slate-900/50 border-slate-600 text-white focus:border-indigo-400 focus:ring-indigo-400/20"
+                                aria-invalid={
+                                  field.state.meta.errors.length > 0
+                                }
+                              >
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent className="bg-slate-900 border-slate-600">
+                                <SelectItem
+                                  value="Avanzado"
+                                  className="text-white focus:bg-indigo-600/20"
+                                >
+                                  Avanzado
+                                </SelectItem>
+                                <SelectItem
+                                  value="Intermedio"
+                                  className="text-white focus:bg-indigo-600/20"
+                                >
+                                  Intermedio
+                                </SelectItem>
+                                <SelectItem
+                                  value="No"
+                                  className="text-white focus:bg-indigo-600/20"
+                                >
+                                  No
+                                </SelectItem>
+                              </SelectContent>
+                            </Select>
+                            {field.state.meta.errors.length > 0 && (
+                              <p className="text-red-400 text-xs">
+                                {field.state.meta.errors[0]}
+                              </p>
+                            )}
+                          </div>
+                        )}
+                      </form.Field>
+                    </div>
 
-              {currentPart === 2 && (
-                <motion.div
-                  key="part2"
-                  initial={{ opacity: 0, x: 50 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -50 }}
-                  transition={{ duration: 0.3 }}
-                  className="space-y-6"
-                >
-                  <motion.div
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2 }}
-                    className="mb-6"
-                  >
-                    <p className="text-indigo-200 text-xs uppercase tracking-[0.4em] mb-2">
-                      Paso 2
-                    </p>
-                    <h3 className="text-xl md:text-2xl font-semibold mb-2 text-indigo-300">
-                      ¡Ya casi terminamos! Solo unos cuantos datos más
-                    </h3>
-                    <p className="text-slate-400 text-sm md:text-base">
-                      Información sobre tu experiencia profesional
-                    </p>
+                    <div className="flex justify-between mt-8">
+                      <Button
+                        type="button"
+                        onClick={handleBack}
+                        variant="outline"
+                        className="border-slate-400 hover:text-gray-50 text-black hover:bg-white/10"
+                      >
+                        <ArrowLeft className="size-4" />
+                        Atrás
+                      </Button>
+                      <Button
+                        type="submit"
+                        disabled={isSubmitting}
+                        className="bg-indigo-600 hover:bg-indigo-700 text-white border-indigo-600 disabled:opacity-50"
+                      >
+                        {isSubmitting ? "Enviando..." : "Enviar formulario"}
+                      </Button>
+                    </div>
                   </motion.div>
+                )}
+              </AnimatePresence>
+            </form>
+          </div>
+        </motion.div>
+      </section>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <form.Field name="ultimoPuesto">
-                      {(field) => (
-                        <div className="space-y-2">
-                          <Label
-                            htmlFor={field.name}
-                            className="text-slate-200"
-                          >
-                            Último puesto *
-                          </Label>
-                          <Input
-                            id={field.name}
-                            name={field.name}
-                            value={field.state.value}
-                            onChange={(e) => field.handleChange(e.target.value)}
-                            onBlur={field.handleBlur}
-                            className="bg-slate-900/50 border-slate-600 text-white placeholder:text-slate-500 focus-visible:border-indigo-400 focus-visible:ring-indigo-400/20"
-                            placeholder="Ej: Senior Developer"
-                            aria-invalid={field.state.meta.errors.length > 0}
-                          />
-                          {field.state.meta.errors.length > 0 && (
-                            <p className="text-red-400 text-xs">
-                              {field.state.meta.errors[0]}
-                            </p>
-                          )}
-                        </div>
-                      )}
-                    </form.Field>
-
-                    <form.Field name="puestoInteres">
-                      {(field) => (
-                        <div className="space-y-2">
-                          <Label
-                            htmlFor={field.name}
-                            className="text-slate-200"
-                          >
-                            Puesto de interés *
-                          </Label>
-                          <Input
-                            id={field.name}
-                            name={field.name}
-                            value={field.state.value}
-                            onChange={(e) => field.handleChange(e.target.value)}
-                            onBlur={field.handleBlur}
-                            className="bg-slate-900/50 border-slate-600 text-white placeholder:text-slate-500 focus-visible:border-indigo-400 focus-visible:ring-indigo-400/20"
-                            placeholder="Ej: Tech Lead"
-                            aria-invalid={field.state.meta.errors.length > 0}
-                          />
-                          {field.state.meta.errors.length > 0 && (
-                            <p className="text-red-400 text-xs">
-                              {field.state.meta.errors[0]}
-                            </p>
-                          )}
-                        </div>
-                      )}
-                    </form.Field>
-
-                    <form.Field name="salarioDeseado">
-                      {(field) => (
-                        <div className="space-y-2">
-                          <Label
-                            htmlFor={field.name}
-                            className="text-slate-200"
-                          >
-                            Salario deseado (MXN) *
-                          </Label>
-                          <Input
-                            id={field.name}
-                            name={field.name}
-                            type="number"
-                            value={field.state.value || ""}
-                            onChange={(e) =>
-                              field.handleChange(
-                                e.target.value ? parseFloat(e.target.value) : 0
-                              )
-                            }
-                            onBlur={field.handleBlur}
-                            className="bg-slate-900/50 border-slate-600 text-white placeholder:text-slate-500 focus-visible:border-indigo-400 focus-visible:ring-indigo-400/20"
-                            placeholder="50000"
-                            aria-invalid={field.state.meta.errors.length > 0}
-                          />
-                          {field.state.meta.errors.length > 0 && (
-                            <p className="text-red-400 text-xs">
-                              {field.state.meta.errors[0]}
-                            </p>
-                          )}
-                        </div>
-                      )}
-                    </form.Field>
-
-                    <form.Field name="titulado">
-                      {(field) => (
-                        <div className="space-y-2">
-                          <Label
-                            htmlFor={field.name}
-                            className="text-slate-200"
-                          >
-                            ¿Estás titulado? *
-                          </Label>
-                          <Select
-                            value={field.state.value}
-                            onValueChange={(value) =>
-                              field.handleChange(value as "Sí" | "No")
-                            }
-                          >
-                            <SelectTrigger
-                              id={field.name}
-                              className="bg-slate-900/50 border-slate-600 text-white focus:border-indigo-400 focus:ring-indigo-400/20"
-                              aria-invalid={field.state.meta.errors.length > 0}
-                            >
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent className="bg-slate-900 border-slate-600">
-                              <SelectItem
-                                value="Sí"
-                                className="text-white focus:bg-indigo-600/20 hover:text-white"
-                              >
-                                Sí
-                              </SelectItem>
-                              <SelectItem
-                                value="No"
-                                className="text-white focus:bg-indigo-600/20 hover:text-white"
-                              >
-                                No
-                              </SelectItem>
-                            </SelectContent>
-                          </Select>
-                          {field.state.meta.errors.length > 0 && (
-                            <p className="text-red-400 text-xs">
-                              {field.state.meta.errors[0]}
-                            </p>
-                          )}
-                        </div>
-                      )}
-                    </form.Field>
-
-                    <form.Field name="ingles">
-                      {(field) => (
-                        <div className="space-y-2 md:col-span-2">
-                          <Label
-                            htmlFor={field.name}
-                            className="text-slate-200"
-                          >
-                            Nivel de inglés *
-                          </Label>
-                          <Select
-                            value={field.state.value}
-                            onValueChange={(value) =>
-                              field.handleChange(
-                                value as "Avanzado" | "Intermedio" | "No"
-                              )
-                            }
-                          >
-                            <SelectTrigger
-                              id={field.name}
-                              className="bg-slate-900/50 border-slate-600 text-white focus:border-indigo-400 focus:ring-indigo-400/20"
-                              aria-invalid={field.state.meta.errors.length > 0}
-                            >
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent className="bg-slate-900 border-slate-600">
-                              <SelectItem
-                                value="Avanzado"
-                                className="text-white focus:bg-indigo-600/20"
-                              >
-                                Avanzado
-                              </SelectItem>
-                              <SelectItem
-                                value="Intermedio"
-                                className="text-white focus:bg-indigo-600/20"
-                              >
-                                Intermedio
-                              </SelectItem>
-                              <SelectItem
-                                value="No"
-                                className="text-white focus:bg-indigo-600/20"
-                              >
-                                No
-                              </SelectItem>
-                            </SelectContent>
-                          </Select>
-                          {field.state.meta.errors.length > 0 && (
-                            <p className="text-red-400 text-xs">
-                              {field.state.meta.errors[0]}
-                            </p>
-                          )}
-                        </div>
-                      )}
-                    </form.Field>
-                  </div>
-
-                  <div className="flex justify-between mt-8">
-                    <Button
-                      type="button"
-                      onClick={handleBack}
-                      variant="outline"
-                      className="border-slate-400 hover:text-gray-50 text-black hover:bg-white/10"
-                    >
-                      <ArrowLeft className="size-4" />
-                      Atrás
-                    </Button>
-                    <Button
-                      type="submit"
-                      disabled={isSubmitting}
-                      className="bg-indigo-600 hover:bg-indigo-700 text-white border-indigo-600 disabled:opacity-50"
-                    >
-                      {isSubmitting ? "Enviando..." : "Enviar formulario"}
-                    </Button>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </form>
-        </div>
-      </motion.div>
-    </section>
+      <Dialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
+        <DialogPopup>
+          <DialogContent className="relative overflow-hidden border border-indigo-900 bg-gradient-to-br from-[#401B98]/80 to-[#180027]/90 text-white shadow-2xl">
+            <div className="absolute pointer-events-none -top-10 -left-10 size-60 bg-gradient-to-br from-[#536DFF]/40 to-[#4F39F6]/60 blur-[120px]" />
+            <div className="absolute pointer-events-none -bottom-10 -right-5 size-56 bg-gradient-to-br from-[#536DFF]/40 to-[#4F39F6]/60 blur-[140px]" />
+            <DialogHeader className="relative z-10 space-y-2 text-center">
+              <DialogTitle className="text-2xl md:text-3xl font-semibold bg-gradient-to-r from-white to-[#b6abff] text-transparent bg-clip-text">
+                ¡Felicidades! Ya formas parte de People Flow Club
+              </DialogTitle>
+              <DialogDescription className="text-indigo-100/80 text-sm md:text-base">
+                Recibimos tu información y comenzaremos a buscar la posición que
+                mejor encaje con tu perfil.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="relative z-10 mt-6 rounded-2xl border border-white/10 bg-black/10 p-4 text-sm text-indigo-100/70">
+              Te escribiremos muy pronto para contarte los siguientes pasos y
+              compartirte oportunidades alineadas a tus metas profesionales.
+            </div>
+          </DialogContent>
+          <DialogFooter className="border-t border-white/10 bg-slate-900/40 px-6 py-4">
+            <DialogClose className="inline-flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-indigo-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">
+              Cerrar y seguir explorando
+            </DialogClose>
+          </DialogFooter>
+        </DialogPopup>
+      </Dialog>
+    </>
   );
 }

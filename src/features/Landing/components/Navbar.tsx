@@ -5,6 +5,7 @@ import { MenuIcon, XIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { RainbowButton } from "@/core/components/shadcn/rainbow-button";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -53,12 +54,9 @@ export default function Navbar() {
         </div>
 
         <div className="hidden lg:block space-x-3">
-          <a
-            href="#contact"
-            className="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 transition text-white rounded-md active:scale-95 inline-block"
-          >
-            Deja tus datos
-          </a>
+          <Link href={"#contact"}>
+            <RainbowButton>Deja tu CV actualizado</RainbowButton>
+          </Link>
           <a
             href="#creations"
             className="hover:bg-slate-300/20 transition px-6 py-2 border border-slate-400 rounded-md active:scale-95 inline-block"

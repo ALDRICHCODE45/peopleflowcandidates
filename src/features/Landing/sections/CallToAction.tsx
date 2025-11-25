@@ -1,6 +1,8 @@
 "use client";
 import { motion } from "framer-motion";
 import SectionTitle from "../components/SectionTitle";
+import Link from "next/link";
+import { RainbowButton } from "@/core/components/shadcn/rainbow-button";
 
 export default function CallToAction() {
   return (
@@ -52,24 +54,9 @@ export default function CallToAction() {
             próxima oportunidad. Tu información está segura y solo la usamos
             para conectarte con posiciones que realmente valen la pena.
           </p>
-          <a
-            href="#contact"
-            className="flex items-center justify-center gap-1 text-sm px-6 py-2.5 border border-indigo-400 hover:bg-indigo-300/10 active:scale-95 transition rounded-full mt-6 mx-auto"
-          >
-            Deja tus datos ahora
-            <svg
-              width="13"
-              height="10"
-              viewBox="0 0 13 10"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M12.4243 5.42426C12.6586 5.18995 12.6586 4.81005 12.4243 4.57574L8.60589 0.757359C8.37157 0.523045 7.99167 0.523045 7.75736 0.757359C7.52304 0.991674 7.52304 1.37157 7.75736 1.60589L11.1515 5L7.75736 8.39411C7.52304 8.62843 7.52304 9.00833 7.75736 9.24264C7.99167 9.47696 8.37157 9.47696 8.60589 9.24264L12.4243 5.42426ZM0 5L0 5.6L12 5.6V5V4.4L0 4.4L0 5Z"
-                fill="white"
-              />
-            </svg>
-          </a>
+          <Link href={"#contact"} className="mt-3">
+            <RainbowButton>Deja tu CV actualizado</RainbowButton>
+          </Link>
         </div>
       </motion.div>
     </section>
