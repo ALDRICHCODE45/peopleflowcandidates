@@ -1,9 +1,4 @@
-import {
-  AudioWaveform,
-  Command,
-  GalleryVerticalEnd,
-  Landmark,
-} from "lucide-react";
+import { Users } from "lucide-react";
 
 export const sidebarLinks = {
   user: {
@@ -11,28 +6,12 @@ export const sidebarLinks = {
     email: "m@example.com",
     avatar: "/avatars/shadcn.jpg",
   },
-  teams: [
-    {
-      name: "Acme Inc",
-      logo: GalleryVerticalEnd,
-      plan: "Enterprise",
-    },
-    {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
-    },
-  ],
+  teams: [],
   navMain: [
     {
-      title: "Candidatos",
-      url: "Candidates",
-      icon: Landmark,
+      title: "PeopleFlow",
+      url: "/recruitment",
+      icon: Users,
       items: [
         {
           title: "Candidatos",
