@@ -16,14 +16,13 @@ import {
 } from "@/core/components/shadcn/select";
 import {
   candidateFormPart1Schema,
-  candidateFormPart2Schema,
   candidateFormCompleteSchema,
-  type CandidateFormData,
 } from "../schemas/candidateFormSchema";
 import { submitCandidateForm } from "../actions/submitCandidateForm";
 import { toast } from "sonner";
 import type { SubmitCandidateFormResult } from "../actions/submitCandidateForm";
 import { ZodError } from "zod";
+import { UploadCV } from "../components/UploadCV";
 
 const sectoresExperiencia = [
   "Tecnología",
@@ -40,8 +39,9 @@ const sectoresExperiencia = [
 ];
 
 export default function CandidateForm() {
-  const [currentPart, setCurrentPart] = useState<1 | 2>(1);
+  const [currentPart, setCurrentPart] = useState<0 | 1 | 2>(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [cvFiles, setCvFiles] = useState<File[]>([]);
 
   const form = useForm({
     defaultValues: {
@@ -69,19 +69,31 @@ export default function CandidateForm() {
     onSubmit: async ({ value }) => {
       setIsSubmitting(true);
       try {
+        if (cvFiles.length === 0) {
+          toast.error("Por favor carga tu CV antes de enviar el formulario.");
+          setCurrentPart(0);
+          return;
+        }
+
+        const cvFile = cvFiles[0];
+        // TODO: Integrar `cvFile` con el backend/almacenamiento cuando haya soporte.
+
         // Validar y parsear los datos antes de enviar
         const validatedData = candidateFormCompleteSchema.parse(value);
-        
+
         // Enviar el formulario a la base de datos
-        const result: SubmitCandidateFormResult = await submitCandidateForm(validatedData);
-        
+        const result: SubmitCandidateFormResult = await submitCandidateForm(
+          validatedData
+        );
+
         if (result.success) {
           // Mostrar mensaje de éxito
           toast.success(result.message);
-          
+
           // Limpiar el formulario después del envío exitoso
           form.reset();
-          setCurrentPart(1);
+          setCvFiles([]);
+          setCurrentPart(0);
         } else {
           // Manejar errores específicos
           if (result.field === "correo") {
@@ -98,11 +110,11 @@ export default function CandidateForm() {
         }
       } catch (error) {
         console.error("Error al enviar formulario:", error);
-        
+
         // Manejar errores de validación de Zod
         if (error instanceof ZodError) {
           let hasFieldErrors = false;
-          
+
           error.issues.forEach((issue) => {
             const fieldName = issue.path[0] as string;
             const validFields = [
@@ -118,11 +130,14 @@ export default function CandidateForm() {
               "titulado",
               "ingles",
             ] as const;
-            
-            if (fieldName && validFields.includes(fieldName as typeof validFields[number])) {
+
+            if (
+              fieldName &&
+              validFields.includes(fieldName as (typeof validFields)[number])
+            ) {
               hasFieldErrors = true;
               form.setFieldMeta(
-                fieldName as typeof validFields[number],
+                fieldName as (typeof validFields)[number],
                 (prev) => ({
                   ...prev,
                   errorMap: { onSubmit: issue.message },
@@ -130,15 +145,25 @@ export default function CandidateForm() {
               );
             }
           });
-          
+
           if (!hasFieldErrors) {
-            toast.error("Por favor verifica que todos los campos estén completos y sean válidos.");
+            toast.error(
+              "Por favor verifica que todos los campos estén completos y sean válidos."
+            );
           } else {
-            toast.error("Por favor corrige los errores en el formulario antes de continuar.");
+            toast.error(
+              "Por favor corrige los errores en el formulario antes de continuar."
+            );
             // Navegar a la parte del formulario donde está el primer error
             const firstErrorField = error.issues[0]?.path[0] as string;
-            const part2Fields = ["ultimoPuesto", "puestoInteres", "salarioDeseado", "titulado", "ingles"];
-            
+            const part2Fields = [
+              "ultimoPuesto",
+              "puestoInteres",
+              "salarioDeseado",
+              "titulado",
+              "ingles",
+            ];
+
             if (firstErrorField && part2Fields.includes(firstErrorField)) {
               // Si el error está en la parte 2, ir a la parte 2
               setCurrentPart(2);
@@ -148,15 +173,28 @@ export default function CandidateForm() {
             }
           }
         } else if (error instanceof Error) {
-          toast.error(error.message || "Ocurrió un error al enviar el formulario. Por favor intenta de nuevo.");
+          toast.error(
+            error.message ||
+              "Ocurrió un error al enviar el formulario. Por favor intenta de nuevo."
+          );
         } else {
-          toast.error("Ocurrió un error inesperado. Por favor intenta de nuevo o contacta con soporte.");
+          toast.error(
+            "Ocurrió un error inesperado. Por favor intenta de nuevo o contacta con soporte."
+          );
         }
       } finally {
         setIsSubmitting(false);
       }
     },
   });
+
+  const handleCvContinue = () => {
+    if (cvFiles.length === 0) {
+      toast.error("Sube tu CV antes de continuar.");
+      return;
+    }
+    setCurrentPart(1);
+  };
 
   const handleContinue = async () => {
     // Validar parte 1 antes de continuar
@@ -177,7 +215,15 @@ export default function CandidateForm() {
   };
 
   const handleBack = () => {
-    setCurrentPart(1);
+    setCurrentPart((prevPart) => {
+      if (prevPart === 2) {
+        return 1;
+      }
+      if (prevPart === 1) {
+        return 0;
+      }
+      return 0;
+    });
   };
 
   return (
@@ -200,15 +246,56 @@ export default function CandidateForm() {
             }}
           >
             <AnimatePresence mode="wait">
-              {currentPart === 1 ? (
+              {currentPart === 0 && (
+                <motion.div
+                  key="part0"
+                  initial={{ opacity: 0, x: -50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 50 }}
+                  transition={{ duration: 0.3 }}
+                  className="space-y-6"
+                >
+                  <div className="mb-6">
+                    <p className="text-indigo-200 text-xs uppercase tracking-[0.4em] mb-2">
+                      Paso 0
+                    </p>
+                    <h2 className="text-2xl md:text-3xl font-semibold mb-3 bg-gradient-to-r from-white to-[#b6abff] text-transparent bg-clip-text">
+                      Sube tu CV
+                    </h2>
+                    <p className="text-slate-400 text-sm md:text-base">
+                      Empecemos cargando tu CV para compartirnos tu experiencia
+                      profesional.
+                    </p>
+                  </div>
+
+                  <UploadCV files={cvFiles} onFilesChange={setCvFiles} />
+
+                  <div className="flex justify-end mt-8">
+                    <Button
+                      type="button"
+                      onClick={handleCvContinue}
+                      className="bg-indigo-600 hover:bg-indigo-700 text-white border-indigo-600"
+                    >
+                      Continuar con tus datos
+                      <ArrowRight className="size-4" />
+                    </Button>
+                  </div>
+                </motion.div>
+              )}
+
+              {currentPart === 1 && (
                 <motion.div
                   key="part1"
-                  initial={{ opacity: 1, x: 0 }}
+                  initial={{ opacity: 0, x: 50 }}
+                  animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -50 }}
                   transition={{ duration: 0.3 }}
                   className="space-y-6"
                 >
                   <div className="mb-6">
+                    <p className="text-indigo-200 text-xs uppercase tracking-[0.4em] mb-2">
+                      Paso 1
+                    </p>
                     <h2 className="text-2xl md:text-3xl font-semibold mb-2 bg-gradient-to-r from-white to-[#b6abff] text-transparent bg-clip-text">
                       Cuéntanos sobre ti
                     </h2>
@@ -402,7 +489,16 @@ export default function CandidateForm() {
                     </form.Field>
                   </div>
 
-                  <div className="flex justify-end mt-8">
+                  <div className="flex justify-between mt-8">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={handleBack}
+                      className="border-slate-400 hover:text-gray-50 text-black hover:bg-white/10"
+                    >
+                      <ArrowLeft className="size-4" />
+                      Atrás
+                    </Button>
                     <Button
                       type="button"
                       onClick={handleContinue}
@@ -413,11 +509,14 @@ export default function CandidateForm() {
                     </Button>
                   </div>
                 </motion.div>
-              ) : (
+              )}
+
+              {currentPart === 2 && (
                 <motion.div
                   key="part2"
                   initial={{ opacity: 0, x: 50 }}
                   animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -50 }}
                   transition={{ duration: 0.3 }}
                   className="space-y-6"
                 >
@@ -427,6 +526,9 @@ export default function CandidateForm() {
                     transition={{ delay: 0.2 }}
                     className="mb-6"
                   >
+                    <p className="text-indigo-200 text-xs uppercase tracking-[0.4em] mb-2">
+                      Paso 2
+                    </p>
                     <h3 className="text-xl md:text-2xl font-semibold mb-2 text-indigo-300">
                       ¡Ya casi terminamos! Solo unos cuantos datos más
                     </h3>

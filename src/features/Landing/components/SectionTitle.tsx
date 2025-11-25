@@ -11,9 +11,9 @@ export default function SectionTitle({
   const lastWord = words.pop();
   const firstPart = words.join(" ");
   return (
-    <div className="flex flex-col items-center mt-32">
+    <div className="flex flex-col items-center mt-20 sm:mt-28">
       <motion.h2
-        className="text-center text-4xl font-semibold max-w-2xl"
+        className="text-center text-3xl sm:text-4xl font-semibold max-w-2xl px-4"
         initial={{ y: 80, opacity: 0 }}
         whileInView={{ y: 0, opacity: 1 }}
         viewport={{ once: true }}
@@ -31,7 +31,7 @@ export default function SectionTitle({
         </motion.span>
       </motion.h2>
       <motion.p
-        className="text-center text-slate-400 max-w-lg mt-3"
+        className="text-center text-slate-400 text-base sm:text-lg max-w-xl px-6 mt-4"
         initial={{ y: 120, opacity: 0 }}
         whileInView={{ y: 0, opacity: 1 }}
         viewport={{ once: true }}

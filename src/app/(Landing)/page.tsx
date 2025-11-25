@@ -1,5 +1,3 @@
-"use client";
-
 import CallToAction from "@/features/Landing/sections/CallToAction";
 import CandidateForm from "@/features/Landing/sections/CandidateForm";
 import HeroSection from "@/features/Landing/sections/HeroSection";

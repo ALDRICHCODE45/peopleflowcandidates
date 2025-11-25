@@ -1,3 +1,4 @@
+"use client";
 import { motion } from "framer-motion";
 import SectionTitle from "../components/SectionTitle";
 
@@ -5,7 +6,8 @@ export default function NuestrosValores() {
   const sectionData = [
     {
       title: "Privacidad garantizada",
-      description: "Tu información es confidencial. Solo la compartimos cuando tú lo autorizas y con empresas que realmente te interesan.",
+      description:
+        "Tu información es confidencial. Solo la compartimos cuando tú lo autorizas y con empresas que realmente te interesan.",
       image:
         "https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/aboutSection/flashEmoji.png",
       className:
@@ -13,7 +15,8 @@ export default function NuestrosValores() {
     },
     {
       title: "Especialización en tech y C-level",
-      description: "Conocemos a fondo el mercado tecnológico y las posiciones ejecutivas. Sabemos qué buscan las empresas y qué necesitas tú.",
+      description:
+        "Conocemos a fondo el mercado tecnológico y las posiciones ejecutivas. Sabemos qué buscan las empresas y qué necesitas tú.",
       image:
         "https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/aboutSection/colorsEmoji.png",
       className:
