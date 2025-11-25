@@ -5,6 +5,13 @@ import CandidateForm from "@/features/Landing/sections/CandidateForm";
 import HeroSection from "@/features/Landing/sections/HeroSection";
 import NuestrosValores from "@/features/Landing/sections/NuestrosValores";
 import QuienesSomos from "@/features/Landing/sections/QuienesSomos";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "PeopleFlow Candidates",
+  description:
+    "PeopleFlow Candidates es un servicio especializado de headhunting para perfiles tech y posiciones C-level. Conectamos talento excepcional con oportunidades extraordinarias, garantizando confidencialidad y resultados.",
+};
 
 export default function Page() {
   return (

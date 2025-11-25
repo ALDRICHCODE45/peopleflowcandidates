@@ -9,6 +9,13 @@ import { BreadcrumbNavbar } from "@/core/components/sidebar/BreadcrumNavbar";
 import { ThemeToogle } from "@/core/components/ThemeToogle";
 import { ThemeProvider } from "@/core/shared/providers/ThemeProvider";
 import { auth } from "@/auth";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "PeopleFlow Candidates",
+  description:
+    "PeopleFlow Candidates es un servicio especializado de headhunting para perfiles tech y posiciones C-level. Conectamos talento excepcional con oportunidades extraordinarias, garantizando confidencialidad y resultados.",
+};
 
 export default async function RootLayout({
   children,
@@ -16,7 +23,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const session = await auth();
-  
+
   const userData = session?.user
     ? {
         name: session.user.name || "Usuario",
