@@ -22,6 +22,8 @@ import {
 } from "../schemas/candidateFormSchema";
 import { submitCandidateForm } from "../actions/submitCandidateForm";
 import { toast } from "sonner";
+import type { SubmitCandidateFormResult } from "../actions/submitCandidateForm";
+import { ZodError } from "zod";
 
 const sectoresExperiencia = [
   "Tecnología",
@@ -69,15 +71,87 @@ export default function CandidateForm() {
       try {
         // Validar y parsear los datos antes de enviar
         const validatedData = candidateFormCompleteSchema.parse(value);
-        await submitCandidateForm(validatedData);
-        // Aquí se puede agregar un toast de éxito o redirección
-
-        toast.success(
-          "¡Gracias por dejar tus datos! Estaremos trabajando para encontrar la mejor posición que se ajuste a tu perfil."
-        );
+        
+        // Enviar el formulario a la base de datos
+        const result: SubmitCandidateFormResult = await submitCandidateForm(validatedData);
+        
+        if (result.success) {
+          // Mostrar mensaje de éxito
+          toast.success(result.message);
+          
+          // Limpiar el formulario después del envío exitoso
+          form.reset();
+          setCurrentPart(1);
+        } else {
+          // Manejar errores específicos
+          if (result.field === "correo") {
+            // Si el error es en el campo correo, establecer el error en ese campo
+            form.setFieldMeta("correo", (prev) => ({
+              ...prev,
+              errorMap: { onSubmit: result.error },
+            }));
+            toast.error(result.error);
+          } else {
+            // Error general
+            toast.error(result.error);
+          }
+        }
       } catch (error) {
         console.error("Error al enviar formulario:", error);
-        // Aquí se puede agregar un toast de error
+        
+        // Manejar errores de validación de Zod
+        if (error instanceof ZodError) {
+          let hasFieldErrors = false;
+          
+          error.issues.forEach((issue) => {
+            const fieldName = issue.path[0] as string;
+            const validFields = [
+              "nombre",
+              "municipioAlcaldia",
+              "ciudad",
+              "telefono",
+              "correo",
+              "ultimoSector",
+              "ultimoPuesto",
+              "puestoInteres",
+              "salarioDeseado",
+              "titulado",
+              "ingles",
+            ] as const;
+            
+            if (fieldName && validFields.includes(fieldName as typeof validFields[number])) {
+              hasFieldErrors = true;
+              form.setFieldMeta(
+                fieldName as typeof validFields[number],
+                (prev) => ({
+                  ...prev,
+                  errorMap: { onSubmit: issue.message },
+                })
+              );
+            }
+          });
+          
+          if (!hasFieldErrors) {
+            toast.error("Por favor verifica que todos los campos estén completos y sean válidos.");
+          } else {
+            toast.error("Por favor corrige los errores en el formulario antes de continuar.");
+            // Navegar a la parte del formulario donde está el primer error
+            const firstErrorField = error.issues[0]?.path[0] as string;
+            const part2Fields = ["ultimoPuesto", "puestoInteres", "salarioDeseado", "titulado", "ingles"];
+            
+            if (firstErrorField && part2Fields.includes(firstErrorField)) {
+              // Si el error está en la parte 2, ir a la parte 2
+              setCurrentPart(2);
+            } else {
+              // Si el error está en la parte 1, ir a la parte 1
+              setCurrentPart(1);
+            }
+          }
+        } else if (error instanceof Error) {
+          toast.error(error.message || "Ocurrió un error al enviar el formulario. Por favor intenta de nuevo.");
+        } else {
+          toast.error("Ocurrió un error inesperado. Por favor intenta de nuevo o contacta con soporte.");
+        }
       } finally {
         setIsSubmitting(false);
       }

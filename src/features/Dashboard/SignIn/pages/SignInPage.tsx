@@ -3,12 +3,43 @@ import { Input } from "@/core/components/shadcn/input";
 import { Label } from "@/core/components/shadcn/label";
 import Image from "next/image";
 import Link from "next/link";
+import { signIn } from "@/auth";
+import { redirect } from "next/navigation";
 
-export default function LoginPage() {
+async function handleSignIn(formData: FormData) {
+  "use server";
+
+  const email = formData.get("email") as string;
+  const password = formData.get("password") as string;
+
+  try {
+    await signIn("credentials", {
+      email,
+      password,
+      redirectTo: "/candidates",
+    });
+  } catch (error) {
+    // Si hay un error de redirección, es porque la autenticación fue exitosa
+    // Next.js maneja las redirecciones lanzando un error especial
+    if (error instanceof Error && error.message.includes("NEXT_REDIRECT")) {
+      throw error;
+    }
+    // Para otros errores, redirigir con mensaje de error
+    redirect("/sign-in?error=InvalidCredentials");
+  }
+}
+
+export default function LoginPage({
+  searchParams,
+}: {
+  searchParams: { error?: string };
+}) {
+  const error = searchParams?.error;
+
   return (
     <section className="flex min-h-screen bg-zinc-50 px-4 py-16 md:py-32 dark:bg-transparent">
       <form
-        action=""
+        action={handleSignIn}
         className="bg-muted m-auto h-fit w-full max-w-sm overflow-hidden rounded-[calc(var(--radius)+.125rem)] border shadow-md shadow-zinc-950/5 dark:[--color-muted:var(--color-zinc-900)]"
       >
         <div className="bg-card -m-px rounded-[calc(var(--radius)+.125rem)] border p-8 pb-6">
@@ -24,38 +55,58 @@ export default function LoginPage() {
             </p>
           </div>
 
+          {error && (
+            <div className="mt-4 rounded-md bg-red-50 p-3 text-sm text-red-800 dark:bg-red-900/20 dark:text-red-400">
+              Credenciales inválidas. Por favor, verifica tu email y contraseña.
+            </div>
+          )}
+
           <div className="mt-6 space-y-6">
             <div className="space-y-2">
               <Label htmlFor="email" className="block text-sm">
                 Usuario
               </Label>
-              <Input type="email" required name="email" id="email" />
+              <Input
+                type="email"
+                required
+                name="email"
+                id="email"
+                autoComplete="email"
+              />
             </div>
 
             <div className="space-y-0.5">
               <div className="flex items-center justify-between">
-                <Label htmlFor="pwd" className="text-sm">
+                <Label htmlFor="password" className="text-sm">
                   Contraseña
                 </Label>
-                <Button variant="link" size="sm">
-                  <Link
-                    href="#"
-                    className="link intent-info variant-ghost text-sm"
-                  >
-                    ¿Olvidaste tu contraseña?
-                  </Link>
+                <Button
+                  variant="link"
+                  size="sm"
+                  type="button"
+                  render={
+                    <Link
+                      href="#"
+                      className="link intent-info variant-ghost text-sm"
+                    />
+                  }
+                >
+                  ¿Olvidaste tu contraseña?
                 </Button>
               </div>
               <Input
                 type="password"
                 required
-                name="pwd"
-                id="pwd"
+                name="password"
+                id="password"
+                autoComplete="current-password"
                 className="input sz-md variant-mixed"
               />
             </div>
 
-            <Button className="w-full">Iniciar sesión</Button>
+            <Button type="submit" className="w-full">
+              Iniciar sesión
+            </Button>
           </div>
         </div>
       </form>

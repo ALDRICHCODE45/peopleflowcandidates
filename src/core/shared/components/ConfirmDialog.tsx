@@ -8,7 +8,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/core/components/shadcn/alert-dialog";
-import { TryCatch } from "@/core/shared/helpers/tryCatch";
 import { showToast } from "@/core/shared/helpers/CustomToast";
 import { Button } from "@/core/components/shadcn/button";
 
@@ -38,9 +37,26 @@ export const ConfirmDialog = ({
 
   const handleConfirm = async () => {
     setIsLoading(true);
-    const result = await TryCatch(Promise.resolve(action()));
+    try {
+      await action();
 
-    if (!result.ok) {
+      // Cerrar el diálogo solo si no hay redirect
+      // (los redirects lanzan errores especiales que Next.js maneja)
+      setOpen(false);
+      setIsLoading(false);
+    } catch (error: unknown) {
+      // Si es un error de redirect de Next.js, no mostrar error
+      // Next.js lanza errores especiales para redirects
+      const errorObj = error as { digest?: string; message?: string };
+      if (
+        errorObj?.digest?.startsWith("NEXT_REDIRECT") ||
+        errorObj?.message?.includes("NEXT_REDIRECT")
+      ) {
+        // El redirect se manejará automáticamente por Next.js
+        return;
+      }
+
+      // Para otros errores, mostrar mensaje
       showToast({
         type: "error",
         title: "Ocurrió un error",
@@ -48,11 +64,7 @@ export const ConfirmDialog = ({
           "No se pudo completar la acción. Por favor, intenta nuevamente o contacta al soporte si el problema persiste.",
       });
       setIsLoading(false);
-      return;
     }
-
-    setOpen(false);
-    setIsLoading(false);
   };
 
   const handleOpenChange = (newOpen: boolean) => {
@@ -76,8 +88,16 @@ export const ConfirmDialog = ({
           <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <Button variant="ghost">{cancelText}</Button>
           <Button
+            type="button"
+            variant="ghost"
+            onClick={() => setOpen(false)}
+            disabled={isLoading}
+          >
+            {cancelText}
+          </Button>
+          <Button
+            type="button"
             variant={variant}
             onClick={handleConfirm}
             disabled={isLoading}

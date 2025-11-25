@@ -11,6 +11,30 @@ model User {
   id        Int      @id @default(autoincrement())
   email     String   @unique
   name      String?
+  password  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+enum InglesLevel {
+  Avanzado
+  Intermedio
+  No
+}
+
+model Candidate {
+  id                Int         @id @default(autoincrement())
+  nombre            String
+  municipioAlcaldia String
+  ciudad            String
+  telefono          String
+  correo            String      @unique
+  ultimoSector      String
+  ultimoPuesto      String
+  puestoInteres     String
+  salarioDeseado    Int
+  titulado          Boolean     @default(false)
+  ingles            InglesLevel @default(No)
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
 }

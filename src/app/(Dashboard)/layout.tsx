@@ -8,12 +8,23 @@ import { AppSidebar } from "@/core/components/sidebar/AppSidebar";
 import { BreadcrumbNavbar } from "@/core/components/sidebar/BreadcrumNavbar";
 import { ThemeToogle } from "@/core/components/ThemeToogle";
 import { ThemeProvider } from "@/core/shared/providers/ThemeProvider";
+import { auth } from "@/auth";
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await auth();
+  
+  const userData = session?.user
+    ? {
+        name: session.user.name || "Usuario",
+        email: session.user.email || "",
+        avatar: session.user.image || "",
+      }
+    : null;
+
   return (
     <>
       <ThemeProvider
@@ -23,7 +34,7 @@ export default function RootLayout({
         disableTransitionOnChange
       >
         <SidebarProvider defaultOpen={false}>
-          <AppSidebar />
+          <AppSidebar user={userData} />
           <SidebarInset className="flex flex-col min-h-screen w-full min-w-0">
             <header className="sticky bg-white dark:bg-black top-0 z-50 flex justify-between w-full h-16 shrink-0 items-center gap-2 border-b min-w-0">
               <div className="flex items-center gap-2 px-4 min-w-0 flex-1">

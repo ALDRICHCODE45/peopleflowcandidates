@@ -18,10 +18,8 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/core/components/shadcn/sidebar";
-//import { useAuth } from "@/core/shared/hooks/use-auth";
-import { ConfirmDialog } from "@/core/shared/components/ConfirmDialog";
 import { Button } from "../shadcn/button";
-//import { Button } from "../button";
+import { handleSignOut } from "@/features/Auth/actions/signOut";
 
 export function NavUser({
   user,
@@ -34,9 +32,17 @@ export function NavUser({
 }) {
   const { isMobile } = useSidebar();
 
-  const handleLogout = () => {
-    console.log("El usuario salio");
+  // Obtener iniciales del nombre para el AvatarFallback
+  const getInitials = (name: string) => {
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
   };
+
+  const initials = getInitials(user.name);
 
   return (
     <SidebarMenu>
@@ -49,7 +55,9 @@ export function NavUser({
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                <AvatarFallback className="rounded-lg">
+                  {initials}
+                </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">{user.name}</span>
@@ -68,7 +76,9 @@ export function NavUser({
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">BA</AvatarFallback>
+                  <AvatarFallback className="rounded-lg">
+                    {initials}
+                  </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium">{user.name}</span>
@@ -78,23 +88,16 @@ export function NavUser({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
 
-            <ConfirmDialog
-              title="Cerrar Sesión"
-              description="¿Estás seguro de que deseas salir de la aplicación? Tendrás que iniciar sesión nuevamente."
-              action={handleLogout}
-              trigger={
-                <Button
-                  variant="destructive-outline"
-                  className="w-full justify-start"
-                >
-                  <LogOut className="h-4 w-4" />
-                  Salir
-                </Button>
-              }
-              confirmText="Sí, salir"
-              cancelText="Cancelar"
-              variant="destructive"
-            />
+            <form action={handleSignOut} className="w-full">
+              <Button
+                type="submit"
+                variant="destructive-outline"
+                className="w-full justify-start"
+              >
+                <LogOut className="h-4 w-4" />
+                Salir
+              </Button>
+            </form>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>

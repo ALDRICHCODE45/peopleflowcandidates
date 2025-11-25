@@ -13,21 +13,32 @@ import {
 import { NavUser } from "./NavUser";
 import { NavMain } from "./NavMain";
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  //   const { user } = useAuth();
-  //   const { permissions } = usePermissions();
-
-  // TODO: Manejar el caso cuando user es null/undefined
-  const userData = {
-    name: "Usuario",
-    email: "usuario@bdp.com",
-    avatar: "/placeholder-avatar.jpg",
-  };
+export function AppSidebar({
+  user,
+  ...props
+}: React.ComponentProps<typeof Sidebar> & {
+  user: {
+    name: string;
+    email: string;
+    avatar: string;
+  } | null;
+}) {
+  // Si no hay usuario, no mostrar el NavUser
+  if (!user) {
+    return (
+      <Sidebar collapsible="icon" {...props} variant="floating">
+        <SidebarContent>
+          <NavMain items={sidebarLinks.navMain} />
+        </SidebarContent>
+        <SidebarRail />
+      </Sidebar>
+    );
+  }
 
   return (
     <Sidebar collapsible="icon" {...props} variant="floating">
       <SidebarHeader>
-        <NavUser user={userData} />
+        <NavUser user={user} />
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={sidebarLinks.navMain} />
