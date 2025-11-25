@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import QueryProvider from "@/core/providers/QueryProvider";
-import { ToasterProvider } from "@/core/providers/ToasterProvider";
+import QueryProvider from "@/core/shared/providers/QueryProvider";
+import { ToasterProvider } from "@/core/shared/providers/ToasterProvider";
 
 const inter = Inter({
   variable: "--font-sans",
