@@ -41,7 +41,7 @@ export default function HeroSection() {
         </defs>
       </motion.svg>
       <motion.a
-        className="flex items-center mt-48 gap-2 border border-slate-600 text-gray-50 rounded-full px-4 py-2"
+        className="flex items-center mt-35 md:mt-48 gap-2 border border-slate-600 text-gray-50 rounded-full px-4 py-2"
         initial={{ y: -20, opacity: 0 }}
         whileInView={{ y: 0, opacity: 1 }}
         viewport={{ once: true }}
@@ -54,7 +54,9 @@ export default function HeroSection() {
         }}
       >
         <div className="size-2.5 bg-green-500 rounded-full animate-pulse"></div>
-        <span>Tu próxima oportunidad te está esperando</span>
+        <span className="text-xs md:text-sm">
+          Tu próxima oportunidad te está esperando
+        </span>
       </motion.a>
       <motion.h1
         className="text-center text-5xl leading-[68px] md:text-5xl md:leading-[70px] mt-4 font-semibold max-w-2xl"
