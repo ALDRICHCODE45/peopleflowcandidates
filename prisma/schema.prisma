@@ -23,18 +23,32 @@ enum InglesLevel {
 }
 
 model Candidate {
-  id                Int         @id @default(autoincrement())
+  id                Int             @id @default(autoincrement())
   nombre            String
   municipioAlcaldia String
   ciudad            String
   telefono          String
-  correo            String      @unique
+  correo            String          @unique
   ultimoSector      String
   ultimoPuesto      String
   puestoInteres     String
   salarioDeseado    Int
-  titulado          Boolean     @default(false)
-  ingles            InglesLevel @default(No)
-  createdAt         DateTime    @default(now())
-  updatedAt         DateTime    @updatedAt
+  titulado          Boolean         @default(false)
+  ingles            InglesLevel     @default(No)
+  cvId              String?         @unique
+  cv                FileAttachment? @relation(fields: [cvId], references: [id])
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+}
+
+model FileAttachment {
+  id         String     @id @default(uuid())
+  fileName   String
+  fileUrl    String
+  fileSize   Int
+  mimeType   String
+  uploadedBy String?
+  candidate  Candidate?
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
 }

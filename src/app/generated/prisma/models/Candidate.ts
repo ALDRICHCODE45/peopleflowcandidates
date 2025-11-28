@@ -49,6 +49,7 @@ export type CandidateMinAggregateOutputType = {
   salarioDeseado: number | null
   titulado: boolean | null
   ingles: $Enums.InglesLevel | null
+  cvId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -66,6 +67,7 @@ export type CandidateMaxAggregateOutputType = {
   salarioDeseado: number | null
   titulado: boolean | null
   ingles: $Enums.InglesLevel | null
+  cvId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -83,6 +85,7 @@ export type CandidateCountAggregateOutputType = {
   salarioDeseado: number
   titulado: number
   ingles: number
+  cvId: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -112,6 +115,7 @@ export type CandidateMinAggregateInputType = {
   salarioDeseado?: true
   titulado?: true
   ingles?: true
+  cvId?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -129,6 +133,7 @@ export type CandidateMaxAggregateInputType = {
   salarioDeseado?: true
   titulado?: true
   ingles?: true
+  cvId?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -146,6 +151,7 @@ export type CandidateCountAggregateInputType = {
   salarioDeseado?: true
   titulado?: true
   ingles?: true
+  cvId?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -250,6 +256,7 @@ export type CandidateGroupByOutputType = {
   salarioDeseado: number
   titulado: boolean
   ingles: $Enums.InglesLevel
+  cvId: string | null
   createdAt: Date
   updatedAt: Date
   _count: CandidateCountAggregateOutputType | null
@@ -290,8 +297,10 @@ export type CandidateWhereInput = {
   salarioDeseado?: Prisma.IntFilter<"Candidate"> | number
   titulado?: Prisma.BoolFilter<"Candidate"> | boolean
   ingles?: Prisma.EnumInglesLevelFilter<"Candidate"> | $Enums.InglesLevel
+  cvId?: Prisma.StringNullableFilter<"Candidate"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Candidate"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Candidate"> | Date | string
+  cv?: Prisma.XOR<Prisma.FileAttachmentNullableScalarRelationFilter, Prisma.FileAttachmentWhereInput> | null
 }
 
 export type CandidateOrderByWithRelationInput = {
@@ -307,13 +316,16 @@ export type CandidateOrderByWithRelationInput = {
   salarioDeseado?: Prisma.SortOrder
   titulado?: Prisma.SortOrder
   ingles?: Prisma.SortOrder
+  cvId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  cv?: Prisma.FileAttachmentOrderByWithRelationInput
 }
 
 export type CandidateWhereUniqueInput = Prisma.AtLeast<{
   id?: number
   correo?: string
+  cvId?: string
   AND?: Prisma.CandidateWhereInput | Prisma.CandidateWhereInput[]
   OR?: Prisma.CandidateWhereInput[]
   NOT?: Prisma.CandidateWhereInput | Prisma.CandidateWhereInput[]
@@ -329,7 +341,8 @@ export type CandidateWhereUniqueInput = Prisma.AtLeast<{
   ingles?: Prisma.EnumInglesLevelFilter<"Candidate"> | $Enums.InglesLevel
   createdAt?: Prisma.DateTimeFilter<"Candidate"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Candidate"> | Date | string
-}, "id" | "correo">
+  cv?: Prisma.XOR<Prisma.FileAttachmentNullableScalarRelationFilter, Prisma.FileAttachmentWhereInput> | null
+}, "id" | "correo" | "cvId">
 
 export type CandidateOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -344,6 +357,7 @@ export type CandidateOrderByWithAggregationInput = {
   salarioDeseado?: Prisma.SortOrder
   titulado?: Prisma.SortOrder
   ingles?: Prisma.SortOrder
+  cvId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.CandidateCountOrderByAggregateInput
@@ -369,6 +383,7 @@ export type CandidateScalarWhereWithAggregatesInput = {
   salarioDeseado?: Prisma.IntWithAggregatesFilter<"Candidate"> | number
   titulado?: Prisma.BoolWithAggregatesFilter<"Candidate"> | boolean
   ingles?: Prisma.EnumInglesLevelWithAggregatesFilter<"Candidate"> | $Enums.InglesLevel
+  cvId?: Prisma.StringNullableWithAggregatesFilter<"Candidate"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Candidate"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Candidate"> | Date | string
 }
@@ -387,6 +402,7 @@ export type CandidateCreateInput = {
   ingles?: $Enums.InglesLevel
   createdAt?: Date | string
   updatedAt?: Date | string
+  cv?: Prisma.FileAttachmentCreateNestedOneWithoutCandidateInput
 }
 
 export type CandidateUncheckedCreateInput = {
@@ -402,6 +418,7 @@ export type CandidateUncheckedCreateInput = {
   salarioDeseado: number
   titulado?: boolean
   ingles?: $Enums.InglesLevel
+  cvId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -420,6 +437,7 @@ export type CandidateUpdateInput = {
   ingles?: Prisma.EnumInglesLevelFieldUpdateOperationsInput | $Enums.InglesLevel
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  cv?: Prisma.FileAttachmentUpdateOneWithoutCandidateNestedInput
 }
 
 export type CandidateUncheckedUpdateInput = {
@@ -435,6 +453,7 @@ export type CandidateUncheckedUpdateInput = {
   salarioDeseado?: Prisma.IntFieldUpdateOperationsInput | number
   titulado?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ingles?: Prisma.EnumInglesLevelFieldUpdateOperationsInput | $Enums.InglesLevel
+  cvId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -452,6 +471,7 @@ export type CandidateCreateManyInput = {
   salarioDeseado: number
   titulado?: boolean
   ingles?: $Enums.InglesLevel
+  cvId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -485,6 +505,7 @@ export type CandidateUncheckedUpdateManyInput = {
   salarioDeseado?: Prisma.IntFieldUpdateOperationsInput | number
   titulado?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ingles?: Prisma.EnumInglesLevelFieldUpdateOperationsInput | $Enums.InglesLevel
+  cvId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -502,6 +523,7 @@ export type CandidateCountOrderByAggregateInput = {
   salarioDeseado?: Prisma.SortOrder
   titulado?: Prisma.SortOrder
   ingles?: Prisma.SortOrder
+  cvId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -524,6 +546,7 @@ export type CandidateMaxOrderByAggregateInput = {
   salarioDeseado?: Prisma.SortOrder
   titulado?: Prisma.SortOrder
   ingles?: Prisma.SortOrder
+  cvId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -541,6 +564,7 @@ export type CandidateMinOrderByAggregateInput = {
   salarioDeseado?: Prisma.SortOrder
   titulado?: Prisma.SortOrder
   ingles?: Prisma.SortOrder
+  cvId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -550,12 +574,131 @@ export type CandidateSumOrderByAggregateInput = {
   salarioDeseado?: Prisma.SortOrder
 }
 
+export type CandidateNullableScalarRelationFilter = {
+  is?: Prisma.CandidateWhereInput | null
+  isNot?: Prisma.CandidateWhereInput | null
+}
+
 export type BoolFieldUpdateOperationsInput = {
   set?: boolean
 }
 
 export type EnumInglesLevelFieldUpdateOperationsInput = {
   set?: $Enums.InglesLevel
+}
+
+export type CandidateCreateNestedOneWithoutCvInput = {
+  create?: Prisma.XOR<Prisma.CandidateCreateWithoutCvInput, Prisma.CandidateUncheckedCreateWithoutCvInput>
+  connectOrCreate?: Prisma.CandidateCreateOrConnectWithoutCvInput
+  connect?: Prisma.CandidateWhereUniqueInput
+}
+
+export type CandidateUncheckedCreateNestedOneWithoutCvInput = {
+  create?: Prisma.XOR<Prisma.CandidateCreateWithoutCvInput, Prisma.CandidateUncheckedCreateWithoutCvInput>
+  connectOrCreate?: Prisma.CandidateCreateOrConnectWithoutCvInput
+  connect?: Prisma.CandidateWhereUniqueInput
+}
+
+export type CandidateUpdateOneWithoutCvNestedInput = {
+  create?: Prisma.XOR<Prisma.CandidateCreateWithoutCvInput, Prisma.CandidateUncheckedCreateWithoutCvInput>
+  connectOrCreate?: Prisma.CandidateCreateOrConnectWithoutCvInput
+  upsert?: Prisma.CandidateUpsertWithoutCvInput
+  disconnect?: Prisma.CandidateWhereInput | boolean
+  delete?: Prisma.CandidateWhereInput | boolean
+  connect?: Prisma.CandidateWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CandidateUpdateToOneWithWhereWithoutCvInput, Prisma.CandidateUpdateWithoutCvInput>, Prisma.CandidateUncheckedUpdateWithoutCvInput>
+}
+
+export type CandidateUncheckedUpdateOneWithoutCvNestedInput = {
+  create?: Prisma.XOR<Prisma.CandidateCreateWithoutCvInput, Prisma.CandidateUncheckedCreateWithoutCvInput>
+  connectOrCreate?: Prisma.CandidateCreateOrConnectWithoutCvInput
+  upsert?: Prisma.CandidateUpsertWithoutCvInput
+  disconnect?: Prisma.CandidateWhereInput | boolean
+  delete?: Prisma.CandidateWhereInput | boolean
+  connect?: Prisma.CandidateWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CandidateUpdateToOneWithWhereWithoutCvInput, Prisma.CandidateUpdateWithoutCvInput>, Prisma.CandidateUncheckedUpdateWithoutCvInput>
+}
+
+export type CandidateCreateWithoutCvInput = {
+  nombre: string
+  municipioAlcaldia: string
+  ciudad: string
+  telefono: string
+  correo: string
+  ultimoSector: string
+  ultimoPuesto: string
+  puestoInteres: string
+  salarioDeseado: number
+  titulado?: boolean
+  ingles?: $Enums.InglesLevel
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type CandidateUncheckedCreateWithoutCvInput = {
+  id?: number
+  nombre: string
+  municipioAlcaldia: string
+  ciudad: string
+  telefono: string
+  correo: string
+  ultimoSector: string
+  ultimoPuesto: string
+  puestoInteres: string
+  salarioDeseado: number
+  titulado?: boolean
+  ingles?: $Enums.InglesLevel
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type CandidateCreateOrConnectWithoutCvInput = {
+  where: Prisma.CandidateWhereUniqueInput
+  create: Prisma.XOR<Prisma.CandidateCreateWithoutCvInput, Prisma.CandidateUncheckedCreateWithoutCvInput>
+}
+
+export type CandidateUpsertWithoutCvInput = {
+  update: Prisma.XOR<Prisma.CandidateUpdateWithoutCvInput, Prisma.CandidateUncheckedUpdateWithoutCvInput>
+  create: Prisma.XOR<Prisma.CandidateCreateWithoutCvInput, Prisma.CandidateUncheckedCreateWithoutCvInput>
+  where?: Prisma.CandidateWhereInput
+}
+
+export type CandidateUpdateToOneWithWhereWithoutCvInput = {
+  where?: Prisma.CandidateWhereInput
+  data: Prisma.XOR<Prisma.CandidateUpdateWithoutCvInput, Prisma.CandidateUncheckedUpdateWithoutCvInput>
+}
+
+export type CandidateUpdateWithoutCvInput = {
+  nombre?: Prisma.StringFieldUpdateOperationsInput | string
+  municipioAlcaldia?: Prisma.StringFieldUpdateOperationsInput | string
+  ciudad?: Prisma.StringFieldUpdateOperationsInput | string
+  telefono?: Prisma.StringFieldUpdateOperationsInput | string
+  correo?: Prisma.StringFieldUpdateOperationsInput | string
+  ultimoSector?: Prisma.StringFieldUpdateOperationsInput | string
+  ultimoPuesto?: Prisma.StringFieldUpdateOperationsInput | string
+  puestoInteres?: Prisma.StringFieldUpdateOperationsInput | string
+  salarioDeseado?: Prisma.IntFieldUpdateOperationsInput | number
+  titulado?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ingles?: Prisma.EnumInglesLevelFieldUpdateOperationsInput | $Enums.InglesLevel
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type CandidateUncheckedUpdateWithoutCvInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  nombre?: Prisma.StringFieldUpdateOperationsInput | string
+  municipioAlcaldia?: Prisma.StringFieldUpdateOperationsInput | string
+  ciudad?: Prisma.StringFieldUpdateOperationsInput | string
+  telefono?: Prisma.StringFieldUpdateOperationsInput | string
+  correo?: Prisma.StringFieldUpdateOperationsInput | string
+  ultimoSector?: Prisma.StringFieldUpdateOperationsInput | string
+  ultimoPuesto?: Prisma.StringFieldUpdateOperationsInput | string
+  puestoInteres?: Prisma.StringFieldUpdateOperationsInput | string
+  salarioDeseado?: Prisma.IntFieldUpdateOperationsInput | number
+  titulado?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ingles?: Prisma.EnumInglesLevelFieldUpdateOperationsInput | $Enums.InglesLevel
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -573,8 +716,10 @@ export type CandidateSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   salarioDeseado?: boolean
   titulado?: boolean
   ingles?: boolean
+  cvId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  cv?: boolean | Prisma.Candidate$cvArgs<ExtArgs>
 }, ExtArgs["result"]["candidate"]>
 
 export type CandidateSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -590,8 +735,10 @@ export type CandidateSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   salarioDeseado?: boolean
   titulado?: boolean
   ingles?: boolean
+  cvId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  cv?: boolean | Prisma.Candidate$cvArgs<ExtArgs>
 }, ExtArgs["result"]["candidate"]>
 
 export type CandidateSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -607,8 +754,10 @@ export type CandidateSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   salarioDeseado?: boolean
   titulado?: boolean
   ingles?: boolean
+  cvId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  cv?: boolean | Prisma.Candidate$cvArgs<ExtArgs>
 }, ExtArgs["result"]["candidate"]>
 
 export type CandidateSelectScalar = {
@@ -624,15 +773,27 @@ export type CandidateSelectScalar = {
   salarioDeseado?: boolean
   titulado?: boolean
   ingles?: boolean
+  cvId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type CandidateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nombre" | "municipioAlcaldia" | "ciudad" | "telefono" | "correo" | "ultimoSector" | "ultimoPuesto" | "puestoInteres" | "salarioDeseado" | "titulado" | "ingles" | "createdAt" | "updatedAt", ExtArgs["result"]["candidate"]>
+export type CandidateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nombre" | "municipioAlcaldia" | "ciudad" | "telefono" | "correo" | "ultimoSector" | "ultimoPuesto" | "puestoInteres" | "salarioDeseado" | "titulado" | "ingles" | "cvId" | "createdAt" | "updatedAt", ExtArgs["result"]["candidate"]>
+export type CandidateInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  cv?: boolean | Prisma.Candidate$cvArgs<ExtArgs>
+}
+export type CandidateIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  cv?: boolean | Prisma.Candidate$cvArgs<ExtArgs>
+}
+export type CandidateIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  cv?: boolean | Prisma.Candidate$cvArgs<ExtArgs>
+}
 
 export type $CandidatePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Candidate"
-  objects: {}
+  objects: {
+    cv: Prisma.$FileAttachmentPayload<ExtArgs> | null
+  }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
     nombre: string
@@ -646,6 +807,7 @@ export type $CandidatePayload<ExtArgs extends runtime.Types.Extensions.InternalA
     salarioDeseado: number
     titulado: boolean
     ingles: $Enums.InglesLevel
+    cvId: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["candidate"]>
@@ -1042,6 +1204,7 @@ readonly fields: CandidateFieldRefs;
  */
 export interface Prisma__CandidateClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  cv<T extends Prisma.Candidate$cvArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Candidate$cvArgs<ExtArgs>>): Prisma.Prisma__FileAttachmentClient<runtime.Types.Result.GetResult<Prisma.$FileAttachmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1083,6 +1246,7 @@ export interface CandidateFieldRefs {
   readonly salarioDeseado: Prisma.FieldRef<"Candidate", 'Int'>
   readonly titulado: Prisma.FieldRef<"Candidate", 'Boolean'>
   readonly ingles: Prisma.FieldRef<"Candidate", 'InglesLevel'>
+  readonly cvId: Prisma.FieldRef<"Candidate", 'String'>
   readonly createdAt: Prisma.FieldRef<"Candidate", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Candidate", 'DateTime'>
 }
@@ -1102,6 +1266,10 @@ export type CandidateFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.Int
    */
   omit?: Prisma.CandidateOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CandidateInclude<ExtArgs> | null
+  /**
    * Filter, which Candidate to fetch.
    */
   where: Prisma.CandidateWhereUniqueInput
@@ -1120,6 +1288,10 @@ export type CandidateFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensi
    */
   omit?: Prisma.CandidateOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CandidateInclude<ExtArgs> | null
+  /**
    * Filter, which Candidate to fetch.
    */
   where: Prisma.CandidateWhereUniqueInput
@@ -1137,6 +1309,10 @@ export type CandidateFindFirstArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Omit specific fields from the Candidate
    */
   omit?: Prisma.CandidateOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CandidateInclude<ExtArgs> | null
   /**
    * Filter, which Candidate to fetch.
    */
@@ -1186,6 +1362,10 @@ export type CandidateFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensio
    */
   omit?: Prisma.CandidateOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CandidateInclude<ExtArgs> | null
+  /**
    * Filter, which Candidate to fetch.
    */
   where?: Prisma.CandidateWhereInput
@@ -1234,6 +1414,10 @@ export type CandidateFindManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
    */
   omit?: Prisma.CandidateOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CandidateInclude<ExtArgs> | null
+  /**
    * Filter, which Candidates to fetch.
    */
   where?: Prisma.CandidateWhereInput
@@ -1277,6 +1461,10 @@ export type CandidateCreateArgs<ExtArgs extends runtime.Types.Extensions.Interna
    */
   omit?: Prisma.CandidateOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CandidateInclude<ExtArgs> | null
+  /**
    * The data needed to create a Candidate.
    */
   data: Prisma.XOR<Prisma.CandidateCreateInput, Prisma.CandidateUncheckedCreateInput>
@@ -1310,6 +1498,10 @@ export type CandidateCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Exten
    */
   data: Prisma.CandidateCreateManyInput | Prisma.CandidateCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CandidateIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1324,6 +1516,10 @@ export type CandidateUpdateArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * Omit specific fields from the Candidate
    */
   omit?: Prisma.CandidateOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CandidateInclude<ExtArgs> | null
   /**
    * The data needed to update a Candidate.
    */
@@ -1376,6 +1572,10 @@ export type CandidateUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Exten
    * Limit how many Candidates to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CandidateIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1390,6 +1590,10 @@ export type CandidateUpsertArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * Omit specific fields from the Candidate
    */
   omit?: Prisma.CandidateOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CandidateInclude<ExtArgs> | null
   /**
    * The filter to search for the Candidate to update in case it exists.
    */
@@ -1417,6 +1621,10 @@ export type CandidateDeleteArgs<ExtArgs extends runtime.Types.Extensions.Interna
    */
   omit?: Prisma.CandidateOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CandidateInclude<ExtArgs> | null
+  /**
    * Filter which Candidate to delete.
    */
   where: Prisma.CandidateWhereUniqueInput
@@ -1437,6 +1645,25 @@ export type CandidateDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Int
 }
 
 /**
+ * Candidate.cv
+ */
+export type Candidate$cvArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the FileAttachment
+   */
+  select?: Prisma.FileAttachmentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the FileAttachment
+   */
+  omit?: Prisma.FileAttachmentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FileAttachmentInclude<ExtArgs> | null
+  where?: Prisma.FileAttachmentWhereInput
+}
+
+/**
  * Candidate without action
  */
 export type CandidateDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1448,4 +1675,8 @@ export type CandidateDefaultArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * Omit specific fields from the Candidate
    */
   omit?: Prisma.CandidateOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CandidateInclude<ExtArgs> | null
 }

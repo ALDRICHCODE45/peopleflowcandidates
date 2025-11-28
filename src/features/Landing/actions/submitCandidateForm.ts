@@ -20,10 +20,12 @@ export type SubmitCandidateFormResult =
  * Esta función valida los datos y los guarda en la base de datos.
  *
  * @param data - Datos del formulario validados con Zod
+ * @param cvId - ID del archivo CV subido (opcional)
  * @returns Promise con el resultado del envío
  */
 export async function submitCandidateForm(
-  data: CandidateFormData
+  data: CandidateFormData,
+  cvId?: string
 ): Promise<SubmitCandidateFormResult> {
   try {
     // Validar los datos con el schema completo
@@ -44,6 +46,7 @@ export async function submitCandidateForm(
       salarioDeseado: validatedData.salarioDeseado,
       titulado: validatedData.titulado === "Sí",
       ingles: validatedData.ingles,
+      cvId: cvId || undefined,
     };
 
     // Crear el candidato en la base de datos

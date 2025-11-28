@@ -1,4 +1,4 @@
-import { auth } from "@/auth";
+import { auth } from "@/core/lib/auth";
 import { NextResponse } from "next/server";
 
 export default auth((req) => {
@@ -10,7 +10,8 @@ export default auth((req) => {
   const isPublicRoute =
     publicRoutes.includes(pathname) ||
     pathname.startsWith("/(Landing)") ||
-    pathname.startsWith("/api/auth");
+    pathname.startsWith("/api/auth") ||
+    pathname.startsWith("/api/upload-cv"); // Permitir acceso a la ruta de upload sin autenticación
 
   // Si el usuario está logueado y trata de acceder a la página de login
   if (isAuthenticated && pathname.startsWith("/sign-in")) {
@@ -41,8 +42,9 @@ export const config = {
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
      * - public folder files
+     * - /api/upload-cv (excluir para evitar problemas con FormData)
      */
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    "/((?!_next/static|_next/image|favicon.ico|api/upload-cv|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
   runtime: "nodejs",
 };

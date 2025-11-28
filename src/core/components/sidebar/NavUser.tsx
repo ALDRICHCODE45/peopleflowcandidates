@@ -19,7 +19,9 @@ import {
   useSidebar,
 } from "@/core/components/shadcn/sidebar";
 import { Button } from "../shadcn/button";
-import { handleSignOut } from "@/features/Auth/actions/signOut";
+
+import { useAuth } from "@/core/shared/hooks/useAuth";
+import { ConfirmDialog } from "@/core/shared/components/ConfirmDialog";
 
 export function NavUser({
   user,
@@ -31,6 +33,7 @@ export function NavUser({
   };
 }) {
   const { isMobile } = useSidebar();
+  const { logout } = useAuth();
 
   // Obtener iniciales del nombre para el AvatarFallback
   const getInitials = (name: string) => {
@@ -87,17 +90,22 @@ export function NavUser({
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-
-            <form action={handleSignOut} className="w-full">
-              <Button
-                type="submit"
-                variant="destructive-outline"
-                className="w-full justify-start"
-              >
-                <LogOut className="h-4 w-4" />
-                Salir
-              </Button>
-            </form>
+            <div className="w-full">
+              <ConfirmDialog
+                title="Cerrar Sesión"
+                description="¿Estás seguro de que deseas salir de la aplicación? Tendrás que iniciar sesión nuevamente."
+                action={logout}
+                trigger={
+                  <Button variant="destructive-outline" className="w-full">
+                    <LogOut className="h-4 w-4" />
+                    Salir
+                  </Button>
+                }
+                confirmText="Sí, salir"
+                cancelText="Cancelar"
+                variant="destructive"
+              />
+            </div>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>

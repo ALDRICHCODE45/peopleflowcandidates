@@ -34,6 +34,7 @@ import {
   DialogClose,
   DialogContent,
 } from "@/core/components/shadcn/dialog";
+import { useCvUpload } from "../hooks/useCvUpload";
 
 const sectoresExperiencia = [
   "Tecnología",
@@ -54,6 +55,18 @@ export default function CandidateForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [cvFiles, setCvFiles] = useState<File[]>([]);
   const [showSuccessDialog, setShowSuccessDialog] = useState<boolean>(false);
+
+  // Hook para manejar la subida de CV
+  const {
+    uploadedFileId,
+    isUploading,
+    uploadError,
+    handleFilesChange: handleCvFilesChange,
+    reset: resetCvUpload,
+  } = useCvUpload((fileId) => {
+    // Callback cuando la subida es exitosa: avanzar automáticamente al siguiente paso
+    setCurrentPart(1);
+  });
 
   const form = useForm({
     defaultValues: {
@@ -81,21 +94,19 @@ export default function CandidateForm() {
     onSubmit: async ({ value }) => {
       setIsSubmitting(true);
       try {
-        if (cvFiles.length === 0) {
+        if (!uploadedFileId) {
           toast.error("Por favor carga tu CV antes de enviar el formulario.");
           setCurrentPart(0);
           return;
         }
 
-        const cvFile = cvFiles[0];
-        // TODO: Integrar `cvFile` con el backend/almacenamiento cuando haya soporte.
-
         // Validar y parsear los datos antes de enviar
         const validatedData = candidateFormCompleteSchema.parse(value);
 
-        // Enviar el formulario a la base de datos
+        // Enviar el formulario a la base de datos con el ID del CV
         const result: SubmitCandidateFormResult = await submitCandidateForm(
-          validatedData
+          validatedData,
+          uploadedFileId
         );
 
         if (result.success) {
@@ -106,6 +117,7 @@ export default function CandidateForm() {
           // Limpiar el formulario después del envío exitoso
           form.reset();
           setCvFiles([]);
+          resetCvUpload();
           setCurrentPart(0);
         } else {
           // Manejar errores específicos
@@ -206,7 +218,22 @@ export default function CandidateForm() {
       toast.error("Sube tu CV antes de continuar.");
       return;
     }
+    if (isUploading) {
+      toast.error("El CV aún se está subiendo. Por favor espera un momento.");
+      return;
+    }
+    if (!uploadedFileId) {
+      toast.error("Por favor espera a que se complete la subida del CV.");
+      return;
+    }
     setCurrentPart(1);
+  };
+
+  // Wrapper para manejar cambios de archivos que actualiza tanto el estado local como el hook
+  const handleFilesChange = (newFiles: File[]) => {
+    setCvFiles(newFiles);
+    // El hook manejará la subida automáticamente
+    handleCvFilesChange(newFiles);
   };
 
   const handleContinue = async () => {
@@ -282,7 +309,13 @@ export default function CandidateForm() {
                       </p>
                     </div>
 
-                    <UploadCV files={cvFiles} onFilesChange={setCvFiles} />
+                    <UploadCV
+                      files={cvFiles}
+                      onFilesChange={handleFilesChange}
+                      isUploading={isUploading}
+                      uploadError={uploadError}
+                      isUploaded={!!uploadedFileId}
+                    />
 
                     <div className="flex justify-end mt-8">
                       <Button

@@ -10,4 +10,5 @@
  */
 export type * from './models/User'
 export type * from './models/Candidate'
+export type * from './models/FileAttachment'
 export type * from './commonInputTypes'

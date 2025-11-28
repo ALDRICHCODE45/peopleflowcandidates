@@ -49,3 +49,8 @@ export type User = Prisma.UserModel
  * 
  */
 export type Candidate = Prisma.CandidateModel
+/**
+ * Model FileAttachment
+ * 
+ */
+export type FileAttachment = Prisma.FileAttachmentModel

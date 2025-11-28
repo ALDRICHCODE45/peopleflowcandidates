@@ -385,7 +385,8 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 export const ModelName = {
   User: 'User',
-  Candidate: 'Candidate'
+  Candidate: 'Candidate',
+  FileAttachment: 'FileAttachment'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -401,7 +402,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "candidate"
+    modelProps: "user" | "candidate" | "fileAttachment"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -553,6 +554,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    FileAttachment: {
+      payload: Prisma.$FileAttachmentPayload<ExtArgs>
+      fields: Prisma.FileAttachmentFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.FileAttachmentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FileAttachmentPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.FileAttachmentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FileAttachmentPayload>
+        }
+        findFirst: {
+          args: Prisma.FileAttachmentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FileAttachmentPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.FileAttachmentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FileAttachmentPayload>
+        }
+        findMany: {
+          args: Prisma.FileAttachmentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FileAttachmentPayload>[]
+        }
+        create: {
+          args: Prisma.FileAttachmentCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FileAttachmentPayload>
+        }
+        createMany: {
+          args: Prisma.FileAttachmentCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.FileAttachmentCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FileAttachmentPayload>[]
+        }
+        delete: {
+          args: Prisma.FileAttachmentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FileAttachmentPayload>
+        }
+        update: {
+          args: Prisma.FileAttachmentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FileAttachmentPayload>
+        }
+        deleteMany: {
+          args: Prisma.FileAttachmentDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.FileAttachmentUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.FileAttachmentUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FileAttachmentPayload>[]
+        }
+        upsert: {
+          args: Prisma.FileAttachmentUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FileAttachmentPayload>
+        }
+        aggregate: {
+          args: Prisma.FileAttachmentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateFileAttachment>
+        }
+        groupBy: {
+          args: Prisma.FileAttachmentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FileAttachmentGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.FileAttachmentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FileAttachmentCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -617,11 +692,26 @@ export const CandidateScalarFieldEnum = {
   salarioDeseado: 'salarioDeseado',
   titulado: 'titulado',
   ingles: 'ingles',
+  cvId: 'cvId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type CandidateScalarFieldEnum = (typeof CandidateScalarFieldEnum)[keyof typeof CandidateScalarFieldEnum]
+
+
+export const FileAttachmentScalarFieldEnum = {
+  id: 'id',
+  fileName: 'fileName',
+  fileUrl: 'fileUrl',
+  fileSize: 'fileSize',
+  mimeType: 'mimeType',
+  uploadedBy: 'uploadedBy',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type FileAttachmentScalarFieldEnum = (typeof FileAttachmentScalarFieldEnum)[keyof typeof FileAttachmentScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -811,6 +901,7 @@ export type PrismaClientOptions = ({
 export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
   candidate?: Prisma.CandidateOmit
+  fileAttachment?: Prisma.FileAttachmentOmit
 }
 
 /* Types for Logging */
