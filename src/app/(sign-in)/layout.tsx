@@ -1,4 +1,5 @@
 import { ThemeProvider } from "@/core/shared/providers/ThemeProvider";
+import { SessionProvider } from "next-auth/react";
 
 export default function SignInLayout({
   children,
@@ -12,8 +13,7 @@ export default function SignInLayout({
       enableSystem
       disableTransitionOnChange
     >
-      {children}
+      <SessionProvider>{children}</SessionProvider>
     </ThemeProvider>
   );
 }
-

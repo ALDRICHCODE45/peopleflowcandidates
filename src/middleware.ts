@@ -12,6 +12,12 @@ export default auth((req) => {
     pathname.startsWith("/(Landing)") ||
     pathname.startsWith("/api/auth");
 
+  // Si el usuario está logueado y trata de acceder a la página de login
+  if (isAuthenticated && pathname.startsWith("/sign-in")) {
+    const candidatesUrl = new URL("/candidates", req.url);
+    return NextResponse.redirect(candidatesUrl);
+  }
+
   // Si es una ruta pública, permitir acceso
   if (isPublicRoute) {
     return NextResponse.next();
@@ -40,4 +46,3 @@ export const config = {
   ],
   runtime: "nodejs",
 };
-

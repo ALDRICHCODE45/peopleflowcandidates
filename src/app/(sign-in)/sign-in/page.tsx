@@ -1,16 +1,11 @@
 import LoginPage from "@/features/Dashboard/SignIn/pages/SignInPage";
 
-const SignInPage = ({
-  searchParams,
-}: {
-  searchParams: { error?: string };
-}) => {
+const SignInPage = () => {
   return (
     <>
-      <LoginPage searchParams={searchParams} />
+      <LoginPage />
     </>
   );
 };
 
 export default SignInPage;
-
