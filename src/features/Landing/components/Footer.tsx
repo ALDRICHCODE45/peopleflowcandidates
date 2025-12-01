@@ -31,7 +31,9 @@ export default function Footer() {
         </div>
         <div className="flex flex-col lg:items-center lg:justify-center">
           <div className="flex flex-col text-sm space-y-2.5">
-            <h2 className="font-semibold mb-4 md:mb-5 text-white">Empresa</h2>
+            <h2 className="font-semibold mb-4 md:mb-5 text-white">
+              Enlaces de interés.
+            </h2>
             <a className="hover:text-slate-500 transition" href="#creations">
               Sobre nosotros
             </a>
@@ -44,27 +46,6 @@ export default function Footer() {
             <a className="hover:text-slate-500 transition" href="#">
               Política de privacidad
             </a>
-          </div>
-        </div>
-        <div>
-          <h2 className="font-semibold text-white mb-4 md:mb-5">
-            Recibe oportunidades exclusivas
-          </h2>
-          <div className="text-sm space-y-4 md:space-y-6 max-w-sm">
-            <p>
-              Déjanos tu email y te notificaremos cuando tengamos una posición
-              que encaje perfectamente con tu perfil.
-            </p>
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-2 p-2 rounded-md bg-slate-900">
-              <input
-                className="outline-none w-full sm:flex-1 py-2 rounded px-2 text-black"
-                type="email"
-                placeholder="Tu email"
-              />
-              <button className="bg-indigo-600 px-4 py-2 text-white rounded w-full sm:w-auto">
-                Suscribirse
-              </button>
-            </div>
           </div>
         </div>
       </div>
