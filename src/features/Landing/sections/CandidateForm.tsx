@@ -106,7 +106,7 @@ export default function CandidateForm() {
         // Enviar el formulario a la base de datos con el ID del CV
         const result: SubmitCandidateFormResult = await submitCandidateForm(
           validatedData,
-          uploadedFileId
+          uploadedFileId,
         );
 
         if (result.success) {
@@ -166,18 +166,18 @@ export default function CandidateForm() {
                 (prev) => ({
                   ...prev,
                   errorMap: { onSubmit: issue.message },
-                })
+                }),
               );
             }
           });
 
           if (!hasFieldErrors) {
             toast.error(
-              "Por favor verifica que todos los campos estén completos y sean válidos."
+              "Por favor verifica que todos los campos estén completos y sean válidos.",
             );
           } else {
             toast.error(
-              "Por favor corrige los errores en el formulario antes de continuar."
+              "Por favor corrige los errores en el formulario antes de continuar.",
             );
             // Navegar a la parte del formulario donde está el primer error
             const firstErrorField = error.issues[0]?.path[0] as string;
@@ -200,11 +200,11 @@ export default function CandidateForm() {
         } else if (error instanceof Error) {
           toast.error(
             error.message ||
-              "Ocurrió un error al enviar el formulario. Por favor intenta de nuevo."
+              "Ocurrió un error al enviar el formulario. Por favor intenta de nuevo.",
           );
         } else {
           toast.error(
-            "Ocurrió un error inesperado. Por favor intenta de nuevo o contacta con soporte."
+            "Ocurrió un error inesperado. Por favor intenta de nuevo o contacta con soporte.",
           );
         }
       } finally {
@@ -300,8 +300,8 @@ export default function CandidateForm() {
                       <p className="text-indigo-200 text-xs uppercase tracking-[0.4em] mb-2">
                         Paso 0
                       </p>
-                      <h2 className="text-2xl md:text-3xl font-semibold mb-3 bg-gradient-to-r from-white to-[#b6abff] text-transparent bg-clip-text">
-                        Sube tu CV
+                      <h2 className="text-2xl md:text-2xl font-semibold mb-3 bg-gradient-to-r from-white to-[#b6abff] text-transparent bg-clip-text">
+                        Comienza la busqueda de tu trabajo ideal.
                       </h2>
                       <p className="text-slate-400 text-sm md:text-base">
                         Empecemos cargando tu CV para compartirnos tu
@@ -347,7 +347,7 @@ export default function CandidateForm() {
                         Cuéntanos sobre ti
                       </h2>
                       <p className="text-slate-400 text-sm md:text-base">
-                        Necesitamos algunos datos básicos para conocerte mejor
+                        Llena los siguientes datos para poder subir tu cv.
                       </p>
                     </div>
 
@@ -677,7 +677,7 @@ export default function CandidateForm() {
                                 field.handleChange(
                                   e.target.value
                                     ? parseFloat(e.target.value)
-                                    : 0
+                                    : 0,
                                 )
                               }
                               onBlur={field.handleBlur}
@@ -755,7 +755,7 @@ export default function CandidateForm() {
                               value={field.state.value}
                               onValueChange={(value) =>
                                 field.handleChange(
-                                  value as "Avanzado" | "Intermedio" | "No"
+                                  value as "Avanzado" | "Intermedio" | "No",
                                 )
                               }
                             >

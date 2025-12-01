@@ -1,9 +1,8 @@
 "use client";
-import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
-import TiltedImage from "../components/tiltImage";
 import { RainbowButton } from "@/core/components/shadcn/rainbow-button";
 import Link from "next/link";
+import CandidateForm from "./CandidateForm";
 
 export default function HeroSection() {
   return (
@@ -67,7 +66,7 @@ export default function HeroSection() {
         viewport={{ once: true }}
         transition={{ type: "spring", stiffness: 240, damping: 70, mass: 1 }}
       >
-        Nosotros encontramos tu posición ideal. Tú solo deja tus datos.
+        Encuentra el trabajo de tus sueños completamente gratis aquí.
       </motion.h1>
       <motion.p
         className="text-center text-base max-w-lg mt-2"
@@ -82,9 +81,9 @@ export default function HeroSection() {
           mass: 1,
         }}
       >
-        Somos especialistas en headhunting para perfiles tech y posiciones
-        C-level. Con años de experiencia y una red extensa, conectamos talento
-        excepcional con oportunidades extraordinarias.
+        somos el enlace mas actual y{" "}
+        <span className="font-bold">SIN COSTO</span> entre candidatos y las
+        mejores empresas para trabajar en mexico y latam
       </motion.p>
       <motion.div
         className="flex items-center gap-4 mt-8"
@@ -104,7 +103,9 @@ export default function HeroSection() {
           Conoce más
         </a>
       </motion.div>
-      <TiltedImage />
+      <section className="mt-8">
+        <CandidateForm />
+      </section>
     </section>
   );
 }

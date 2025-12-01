@@ -18,7 +18,6 @@ export default function Page() {
       <QuienesSomos />
       <NuestrosValores />
       <CallToAction />
-      <CandidateForm />
     </main>
   );
 }

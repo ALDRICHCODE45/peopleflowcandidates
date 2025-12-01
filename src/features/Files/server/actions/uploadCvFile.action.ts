@@ -14,7 +14,7 @@ export type UploadCvFileResult =
  * @returns Promise con el resultado de la subida
  */
 export async function uploadCvFile(
-  formData: FormData
+  formData: FormData,
 ): Promise<UploadCvFileResult> {
   try {
     const file = formData.get("file") as File | null;
@@ -62,4 +62,3 @@ export async function uploadCvFile(
     };
   }
 }
-
