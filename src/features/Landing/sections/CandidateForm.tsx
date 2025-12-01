@@ -55,6 +55,7 @@ export default function CandidateForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [cvFiles, setCvFiles] = useState<File[]>([]);
   const [showSuccessDialog, setShowSuccessDialog] = useState<boolean>(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
 
   // Hook para manejar la subida de CV
   const {
@@ -63,10 +64,7 @@ export default function CandidateForm() {
     uploadError,
     handleFilesChange: handleCvFilesChange,
     reset: resetCvUpload,
-  } = useCvUpload((fileId) => {
-    // Callback cuando la subida es exitosa: avanzar automáticamente al siguiente paso
-    setCurrentPart(1);
-  });
+  } = useCvUpload();
 
   const form = useForm({
     defaultValues: {
@@ -118,6 +116,7 @@ export default function CandidateForm() {
           form.reset();
           setCvFiles([]);
           resetCvUpload();
+          setTermsAccepted(false);
           setCurrentPart(0);
         } else {
           // Manejar errores específicos
@@ -226,6 +225,10 @@ export default function CandidateForm() {
       toast.error("Por favor espera a que se complete la subida del CV.");
       return;
     }
+    if (!termsAccepted) {
+      toast.error("Debes aceptar la política de privacidad para continuar.");
+      return;
+    }
     setCurrentPart(1);
   };
 
@@ -315,6 +318,8 @@ export default function CandidateForm() {
                       isUploading={isUploading}
                       uploadError={uploadError}
                       isUploaded={!!uploadedFileId}
+                      termsAccepted={termsAccepted}
+                      onTermsChange={setTermsAccepted}
                     />
 
                     <div className="flex justify-end mt-6 md:mt-8">

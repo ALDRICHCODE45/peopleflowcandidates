@@ -30,6 +30,8 @@ type UploadCVProps = {
   isUploading?: boolean;
   uploadError?: string | null;
   isUploaded?: boolean;
+  termsAccepted?: boolean;
+  onTermsChange?: (accepted: boolean) => void;
 };
 
 export function UploadCV({
@@ -38,6 +40,8 @@ export function UploadCV({
   isUploading = false,
   uploadError = null,
   isUploaded = false,
+  termsAccepted = false,
+  onTermsChange,
 }: UploadCVProps) {
   const onFileReject = React.useCallback((file: File, message: string) => {
     toast.error("No pudimos cargar tu archivo", {
@@ -204,7 +208,15 @@ export function UploadCV({
         </div>
       )}
       <div className="flex items-center gap-3 mt-5">
-        <Checkbox id="terms" />
+        <Checkbox 
+          id="terms" 
+          checked={termsAccepted}
+          onCheckedChange={(checked) => {
+            if (onTermsChange) {
+              onTermsChange(checked === true);
+            }
+          }}
+        />
         <Label htmlFor="terms">
           Acepto la politica de privacidad de datos.
         </Label>
