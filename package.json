@@ -4,9 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build && bun run prisma:deploy",
     "start": "next start",
     "lint": "eslint",
+    "prisma:deploy": "bunx prisma migrate deploy && bunx prisma generate",
     "prisma:generate": "bunx prisma generate",
     "prisma:migrate": "bunx prisma migrate dev",
     "prisma:studio": "bunx prisma studio",
