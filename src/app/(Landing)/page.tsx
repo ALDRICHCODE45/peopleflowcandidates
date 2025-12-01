@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <main className="px-6 md:px-16 lg:px-24 xl:px-32">
+    <main className="px-4 md:px-16 lg:px-24 xl:px-32">
       <HeroSection />
       <QuienesSomos />
       <NuestrosValores />

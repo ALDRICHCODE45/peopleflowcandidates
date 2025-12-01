@@ -8,7 +8,7 @@ export default function HeroSection() {
   return (
     <section id="hero" className="flex flex-col items-center -mt-18">
       <motion.svg
-        className="absolute -z-10 w-full -mt-40 md:mt-0"
+        className="absolute -z-10 w-full -mt-20 md:mt-0"
         width="1440"
         height="676"
         viewBox="0 0 1440 676"
@@ -42,7 +42,7 @@ export default function HeroSection() {
         </defs>
       </motion.svg>
       <motion.a
-        className="flex items-center mt-35 md:mt-48 gap-2 border border-slate-600 text-gray-50 rounded-full px-4 py-2"
+        className="flex items-center mt-24 md:mt-48 gap-2 border border-slate-600 text-gray-50 rounded-full px-3 py-1.5 md:px-4 md:py-2"
         initial={{ y: -20, opacity: 0 }}
         whileInView={{ y: 0, opacity: 1 }}
         viewport={{ once: true }}
@@ -60,7 +60,7 @@ export default function HeroSection() {
         </span>
       </motion.a>
       <motion.h1
-        className="text-center text-5xl leading-[68px] md:text-5xl md:leading-[70px] mt-4 font-semibold max-w-2xl"
+        className="text-center text-3xl leading-tight md:text-4xl md:leading-[60px] lg:text-5xl lg:leading-[70px] mt-4 font-semibold max-w-2xl px-4"
         initial={{ y: 50, opacity: 0 }}
         whileInView={{ y: 0, opacity: 1 }}
         viewport={{ once: true }}
@@ -69,7 +69,7 @@ export default function HeroSection() {
         Encuentra el trabajo de tus sueños completamente gratis aquí.
       </motion.h1>
       <motion.p
-        className="text-center text-base max-w-lg mt-2"
+        className="text-center text-sm md:text-base max-w-lg mt-2 px-4"
         initial={{ y: 50, opacity: 0 }}
         whileInView={{ y: 0, opacity: 1 }}
         viewport={{ once: true }}
@@ -86,19 +86,19 @@ export default function HeroSection() {
         mejores empresas para trabajar en mexico y latam
       </motion.p>
       <motion.div
-        className="flex items-center gap-4 mt-8"
+        className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 mt-6 md:mt-8 w-full sm:w-auto px-4"
         initial={{ y: 50, opacity: 0 }}
         whileInView={{ y: 0, opacity: 1 }}
         viewport={{ once: true }}
         transition={{ type: "spring", stiffness: 320, damping: 70, mass: 1 }}
       >
-        <Link href={"#contact"}>
-          <RainbowButton>Deja tu CV actualizado</RainbowButton>
+        <Link href={"#contact"} className="w-full sm:w-auto">
+          <RainbowButton className="w-full sm:w-auto">Deja tu CV actualizado</RainbowButton>
         </Link>
 
         <a
           href="#creations"
-          className="border border-slate-400 active:scale-95 hover:bg-white/10 transition rounded-lg px-8 h-11 flex items-center justify-center"
+          className="border border-slate-400 active:scale-95 hover:bg-white/10 transition rounded-lg px-6 md:px-8 h-11 flex items-center justify-center w-full sm:w-auto"
         >
           Conoce más
         </a>

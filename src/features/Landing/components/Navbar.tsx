@@ -26,7 +26,7 @@ export default function Navbar() {
   return (
     <>
       <motion.nav
-        className="sticky top-0 z-50 flex items-center justify-between w-full h-18 px-6 md:px-16 lg:px-24 xl:px-32 backdrop-blur"
+        className="sticky top-0 z-50 flex items-center justify-between w-full h-18 px-4 md:px-16 lg:px-24 xl:px-32 backdrop-blur"
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         viewport={{ once: true }}
@@ -35,9 +35,10 @@ export default function Navbar() {
         <Link href="#hero">
           <Image
             src="/candidateslogo.webp"
-            width={230}
-            height={50}
+            width={180}
+            height={40}
             alt="logo"
+            className="w-[140px] h-auto md:w-[180px] lg:w-[230px]"
           />
         </Link>
 

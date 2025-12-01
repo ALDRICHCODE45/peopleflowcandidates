@@ -65,7 +65,7 @@ export default function QuienesSomos() {
       />
 
       <div
-        className="flex flex-col lg:flex-row items-stretch gap-4 w-full max-w-5xl mt-14 mx-auto"
+        className="flex flex-col lg:flex-row items-stretch gap-4 md:gap-4 w-full max-w-5xl mt-8 md:mt-14 mx-auto"
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
@@ -87,7 +87,7 @@ export default function QuienesSomos() {
           return (
             <motion.div
               key={data.title}
-              className={`relative group flex-grow h-[320px] sm:h-[360px] md:h-[420px] w-full rounded-2xl overflow-hidden bg-slate-900/40 border border-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.45)] backdrop-blur ${
+              className={`relative group flex-grow h-[280px] sm:h-[320px] md:h-[360px] lg:h-[420px] w-full rounded-2xl overflow-hidden bg-slate-900/40 border border-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.45)] backdrop-blur ${
                 className || ""
               } ${widthClasses} ${
                 !className ? "pointer-events-none" : ""
@@ -110,12 +110,12 @@ export default function QuienesSomos() {
                 alt={data.title}
               />
               <div
-                className={`absolute inset-0 flex flex-col justify-end gap-2 p-6 sm:p-8 text-white bg-gradient-to-t from-black/85 via-black/35 to-transparent opacity-100 ${infoLayerVisibility}`}
+                className={`absolute inset-0 flex flex-col justify-end gap-2 p-4 sm:p-6 md:p-8 text-white bg-gradient-to-t from-black/85 via-black/35 to-transparent opacity-100 ${infoLayerVisibility}`}
               >
-                <h1 className="text-2xl sm:text-3xl font-semibold leading-tight">
+                <h1 className="text-xl sm:text-2xl md:text-3xl font-semibold leading-tight">
                   {data.title}
                 </h1>
-                <p className="text-sm sm:text-base text-slate-200/90">
+                <p className="text-xs sm:text-sm md:text-base text-slate-200/90">
                   {data.description}
                 </p>
               </div>

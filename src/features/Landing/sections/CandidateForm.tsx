@@ -268,7 +268,7 @@ export default function CandidateForm() {
 
   return (
     <>
-      <section id="contact" className="flex flex-col items-center mt-20 mb-20">
+      <section id="contact" className="flex flex-col items-center mt-12 md:mt-20 mb-12 md:mb-20">
         <motion.div
           className="relative max-w-3xl w-full mx-auto"
           initial={{ opacity: 0, y: 50 }}
@@ -279,7 +279,7 @@ export default function CandidateForm() {
           <div className="absolute pointer-events-none top-10 -z-1 left-20 size-64 bg-gradient-to-br from-[#536DFF] to-[#4F39F6]/60 blur-[180px]"></div>
           <div className="absolute pointer-events-none bottom-10 -z-1 right-20 size-64 bg-gradient-to-br from-[#536DFF] to-[#4F39F6]/60 blur-[180px]"></div>
 
-          <div className="relative border border-indigo-900 bg-gradient-to-br from-[#401B98]/5 to-[#180027]/10 rounded-3xl p-6 md:p-10 text-white">
+          <div className="relative border border-indigo-900 bg-gradient-to-br from-[#401B98]/5 to-[#180027]/10 rounded-2xl md:rounded-3xl p-4 md:p-6 lg:p-10 text-white">
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -300,7 +300,7 @@ export default function CandidateForm() {
                       <p className="text-indigo-200 text-xs uppercase tracking-[0.4em] mb-2">
                         Paso 0
                       </p>
-                      <h2 className="text-2xl md:text-2xl font-semibold mb-3 bg-gradient-to-r from-white to-[#b6abff] text-transparent bg-clip-text">
+                      <h2 className="text-xl md:text-2xl font-semibold mb-3 bg-gradient-to-r from-white to-[#b6abff] text-transparent bg-clip-text">
                         Comienza la busqueda de tu trabajo ideal.
                       </h2>
                       <p className="text-slate-400 text-sm md:text-base">
@@ -317,11 +317,11 @@ export default function CandidateForm() {
                       isUploaded={!!uploadedFileId}
                     />
 
-                    <div className="flex justify-end mt-8">
+                    <div className="flex justify-end mt-6 md:mt-8">
                       <Button
                         type="button"
                         onClick={handleCvContinue}
-                        className="bg-indigo-600 hover:bg-indigo-700 text-white border-indigo-600"
+                        className="bg-indigo-600 hover:bg-indigo-700 text-white border-indigo-600 w-full sm:w-auto"
                       >
                         Continuar con tus datos
                         <ArrowRight className="size-4" />
@@ -343,7 +343,7 @@ export default function CandidateForm() {
                       <p className="text-indigo-200 text-xs uppercase tracking-[0.4em] mb-2">
                         Paso 1
                       </p>
-                      <h2 className="text-2xl md:text-3xl font-semibold mb-2 bg-gradient-to-r from-white to-[#b6abff] text-transparent bg-clip-text">
+                      <h2 className="text-xl md:text-2xl lg:text-3xl font-semibold mb-2 bg-gradient-to-r from-white to-[#b6abff] text-transparent bg-clip-text">
                         Cuéntanos sobre ti
                       </h2>
                       <p className="text-slate-400 text-sm md:text-base">
@@ -550,12 +550,12 @@ export default function CandidateForm() {
                       </form.Field>
                     </div>
 
-                    <div className="flex justify-between mt-8">
+                    <div className="flex flex-col sm:flex-row justify-between gap-3 sm:gap-0 mt-6 md:mt-8">
                       <Button
                         type="button"
                         variant="outline"
                         onClick={handleBack}
-                        className="border-slate-400 hover:text-gray-50 text-black hover:bg-white/10"
+                        className="border-slate-400 hover:text-gray-50 text-black hover:bg-white/10 w-full sm:w-auto order-2 sm:order-1"
                       >
                         <ArrowLeft className="size-4" />
                         Atrás
@@ -563,7 +563,7 @@ export default function CandidateForm() {
                       <Button
                         type="button"
                         onClick={handleContinue}
-                        className="bg-indigo-600 hover:bg-indigo-700 text-white border-indigo-600"
+                        className="bg-indigo-600 hover:bg-indigo-700 text-white border-indigo-600 w-full sm:w-auto order-1 sm:order-2"
                       >
                         Continuar
                         <ArrowRight className="size-4" />
@@ -590,7 +590,7 @@ export default function CandidateForm() {
                       <p className="text-indigo-200 text-xs uppercase tracking-[0.4em] mb-2">
                         Paso 2
                       </p>
-                      <h3 className="text-xl md:text-2xl font-semibold mb-2 text-indigo-300">
+                      <h3 className="text-lg md:text-xl lg:text-2xl font-semibold mb-2 text-indigo-300">
                         ¡Ya casi terminamos! Solo unos cuantos datos más
                       </h3>
                       <p className="text-slate-400 text-sm md:text-base">
@@ -799,12 +799,12 @@ export default function CandidateForm() {
                       </form.Field>
                     </div>
 
-                    <div className="flex justify-between mt-8">
+                    <div className="flex flex-col sm:flex-row justify-between gap-3 sm:gap-0 mt-6 md:mt-8">
                       <Button
                         type="button"
                         onClick={handleBack}
                         variant="outline"
-                        className="border-slate-400 hover:text-gray-50 text-black hover:bg-white/10"
+                        className="border-slate-400 hover:text-gray-50 text-black hover:bg-white/10 w-full sm:w-auto order-2 sm:order-1"
                       >
                         <ArrowLeft className="size-4" />
                         Atrás
@@ -812,7 +812,7 @@ export default function CandidateForm() {
                       <Button
                         type="submit"
                         disabled={isSubmitting}
-                        className="bg-indigo-600 hover:bg-indigo-700 text-white border-indigo-600 disabled:opacity-50"
+                        className="bg-indigo-600 hover:bg-indigo-700 text-white border-indigo-600 disabled:opacity-50 w-full sm:w-auto order-1 sm:order-2"
                       >
                         {isSubmitting ? "Enviando..." : "Enviar formulario"}
                       </Button>
@@ -831,10 +831,10 @@ export default function CandidateForm() {
             <div className="absolute pointer-events-none -top-10 -left-10 size-60 bg-gradient-to-br from-[#536DFF]/40 to-[#4F39F6]/60 blur-[120px]" />
             <div className="absolute pointer-events-none -bottom-10 -right-5 size-56 bg-gradient-to-br from-[#536DFF]/40 to-[#4F39F6]/60 blur-[140px]" />
             <DialogHeader className="relative z-10 space-y-2 text-center">
-              <DialogTitle className="text-2xl md:text-3xl font-semibold bg-gradient-to-r from-white to-[#b6abff] text-transparent bg-clip-text">
+              <DialogTitle className="text-xl md:text-2xl lg:text-3xl font-semibold bg-gradient-to-r from-white to-[#b6abff] text-transparent bg-clip-text px-2">
                 ¡Felicidades! Ya formas parte de People Flow Club
               </DialogTitle>
-              <DialogDescription className="text-indigo-100/80 text-sm md:text-base">
+              <DialogDescription className="text-indigo-100/80 text-sm md:text-base px-2">
                 Recibimos tu información y comenzaremos a buscar la posición que
                 mejor encaje con tu perfil.
               </DialogDescription>
