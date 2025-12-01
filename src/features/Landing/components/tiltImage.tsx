@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useCallback } from "react";
 import { useMotionValue, useSpring, motion } from "framer-motion";
 import type { MouseEvent } from "react";
 
@@ -26,34 +26,63 @@ export default function TiltedImage({ rotateAmplitude = 3 }: TiltedImageProps) {
     mass: 1,
   });
 
-  const [lastY, setLastY] = useState(0);
+  const lastYRef = useRef(0);
+  const rafIdRef = useRef<number | null>(null);
+  const pendingEventRef = useRef<MouseEvent<HTMLElement> | null>(null);
 
-  function handleMouse(e: MouseEvent<HTMLElement>) {
-    if (!ref.current) return;
+  const handleMouse = useCallback((e: MouseEvent<HTMLElement>) => {
+    // Guardar el evento más reciente
+    pendingEventRef.current = e;
 
-    const rect = ref.current.getBoundingClientRect();
-    const offsetX = e.clientX - rect.left - rect.width / 2;
-    const offsetY = e.clientY - rect.top - rect.height / 2;
+    // Si ya hay un RAF pendiente, no hacer nada
+    if (rafIdRef.current !== null) {
+      return;
+    }
 
-    const rotationX = (offsetY / (rect.height / 2)) * -rotateAmplitude;
-    const rotationY = (offsetX / (rect.width / 2)) * rotateAmplitude;
+    // Usar requestAnimationFrame para throttling
+    rafIdRef.current = requestAnimationFrame(() => {
+      const event = pendingEventRef.current;
+      if (!event || !ref.current) {
+        rafIdRef.current = null;
+        return;
+      }
 
-    rotateX.set(rotationX);
-    rotateY.set(rotationY);
+      const rect = ref.current.getBoundingClientRect();
+      const offsetX = event.clientX - rect.left - rect.width / 2;
+      const offsetY = event.clientY - rect.top - rect.height / 2;
 
-    x.set(e.clientX - rect.left);
-    y.set(e.clientY - rect.top);
+      const rotationX = (offsetY / (rect.height / 2)) * -rotateAmplitude;
+      const rotationY = (offsetX / (rect.width / 2)) * rotateAmplitude;
 
-    const velocityY = offsetY - lastY;
-    rotateFigcaption.set(-velocityY * 0.6);
-    setLastY(offsetY);
-  }
+      rotateX.set(rotationX);
+      rotateY.set(rotationY);
 
-  function handleMouseLeave() {
+      x.set(event.clientX - rect.left);
+      y.set(event.clientY - rect.top);
+
+      const velocityY = offsetY - lastYRef.current;
+      rotateFigcaption.set(-velocityY * 0.6);
+      lastYRef.current = offsetY;
+
+      // Limpiar el RAF
+      rafIdRef.current = null;
+      pendingEventRef.current = null;
+    });
+  }, [rotateAmplitude, rotateX, rotateY, rotateFigcaption, x, y]);
+
+  const handleMouseLeave = useCallback(() => {
+    // Cancelar cualquier RAF pendiente
+    if (rafIdRef.current !== null) {
+      cancelAnimationFrame(rafIdRef.current);
+      rafIdRef.current = null;
+    }
+    pendingEventRef.current = null;
+
     rotateX.set(0);
     rotateY.set(0);
     rotateFigcaption.set(0);
-  }
+    lastYRef.current = 0;
+  }, [rotateX, rotateY, rotateFigcaption]);
 
   return (
     <motion.figure

@@ -1,44 +1,61 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import SectionTitle from "../components/SectionTitle";
+
+// Mover datos estáticos fuera del componente para evitar recreación
+const sectionData = [
+  {
+    title: "Confidencialidad absoluta",
+    description:
+      "Tus datos están protegidos con los más altos estándares de seguridad. Solo compartimos tu perfil con oportunidades que realmente valen la pena.",
+    image: "/landing/persona1.png",
+    align: "object-center",
+  },
+  {
+    title: "Red de oportunidades exclusivas",
+    description:
+      "Acceso a posiciones que no encontrarás en portales públicos. Conectamos con empresas líderes que buscan talento excepcional.",
+    image: "/landing/persona2.png",
+    align: "object-right",
+  },
+  {
+    title: "Experiencia comprobada",
+    description:
+      "Años especializándonos en tech y posiciones C-level. Conocemos el mercado, entendemos tu perfil y sabemos dónde encajas mejor.",
+    image: "/landing/persona3.png",
+    align: "object-center",
+  },
+] as const;
 
 export default function QuienesSomos() {
   const [isHovered, setIsHovered] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const [className, setClassName] = useState("");
 
-  const sectionData = [
-    {
-      title: "Confidencialidad absoluta",
-      description:
-        "Tus datos están protegidos con los más altos estándares de seguridad. Solo compartimos tu perfil con oportunidades que realmente valen la pena.",
-      image: "/landing/persona1.png",
-      align: "object-center",
-    },
-    {
-      title: "Red de oportunidades exclusivas",
-      description:
-        "Acceso a posiciones que no encontrarás en portales públicos. Conectamos con empresas líderes que buscan talento excepcional.",
-      image: "/landing/persona2.png",
-      align: "object-right",
-    },
-    {
-      title: "Experiencia comprobada",
-      description:
-        "Años especializándonos en tech y posiciones C-level. Conocemos el mercado, entendemos tu perfil y sabemos dónde encajas mejor.",
-      image: "/landing/persona3.png",
-      align: "object-center",
-    },
-  ];
+  // Memoizar handlers para evitar recreación
+  const handleMouseEnter = useCallback(() => {
+    setIsHovered(true);
+  }, []);
 
+  const handleMouseLeave = useCallback(() => {
+    setIsHovered(false);
+  }, []);
+
+  const handleAnimationComplete = useCallback(() => {
+    setClassName("transition-all duration-500");
+  }, []);
+
+  // Optimizar el interval - solo recrear cuando cambie isHovered
   useEffect(() => {
     if (isHovered) return;
+
     const interval = setInterval(() => {
       setActiveIndex((prev) => (prev + 1) % sectionData.length);
     }, 3000);
+
     return () => clearInterval(interval);
-  }, [isHovered, sectionData.length]);
+  }, [isHovered]);
 
   return (
     <section className="flex flex-col items-center w-full px-4" id="creations">
@@ -49,8 +66,8 @@ export default function QuienesSomos() {
 
       <div
         className="flex flex-col lg:flex-row items-stretch gap-4 w-full max-w-5xl mt-14 mx-auto"
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
       >
         {sectionData.map((data, index) => {
           const isActive = index === activeIndex;
@@ -78,9 +95,7 @@ export default function QuienesSomos() {
               initial={{ y: 150, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
               viewport={{ once: true }}
-              onAnimationComplete={() =>
-                setClassName("transition-all duration-500")
-              }
+              onAnimationComplete={handleAnimationComplete}
               transition={{
                 delay: index * 0.15,
                 type: "spring",
