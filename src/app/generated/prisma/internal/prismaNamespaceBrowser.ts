@@ -94,7 +94,7 @@ export const CandidateScalarFieldEnum = {
   ultimoSector: 'ultimoSector',
   ultimoPuesto: 'ultimoPuesto',
   puestoInteres: 'puestoInteres',
-  salarioDeseado: 'salarioDeseado',
+  rangoSalarioDeseado: 'rangoSalarioDeseado',
   titulado: 'titulado',
   ingles: 'ingles',
   cvId: 'cvId',

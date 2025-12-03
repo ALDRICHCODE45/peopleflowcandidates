@@ -28,12 +28,10 @@ export type AggregateCandidate = {
 
 export type CandidateAvgAggregateOutputType = {
   id: number | null
-  salarioDeseado: number | null
 }
 
 export type CandidateSumAggregateOutputType = {
   id: number | null
-  salarioDeseado: number | null
 }
 
 export type CandidateMinAggregateOutputType = {
@@ -46,7 +44,7 @@ export type CandidateMinAggregateOutputType = {
   ultimoSector: string | null
   ultimoPuesto: string | null
   puestoInteres: string | null
-  salarioDeseado: number | null
+  rangoSalarioDeseado: string | null
   titulado: boolean | null
   ingles: $Enums.InglesLevel | null
   cvId: string | null
@@ -64,7 +62,7 @@ export type CandidateMaxAggregateOutputType = {
   ultimoSector: string | null
   ultimoPuesto: string | null
   puestoInteres: string | null
-  salarioDeseado: number | null
+  rangoSalarioDeseado: string | null
   titulado: boolean | null
   ingles: $Enums.InglesLevel | null
   cvId: string | null
@@ -82,7 +80,7 @@ export type CandidateCountAggregateOutputType = {
   ultimoSector: number
   ultimoPuesto: number
   puestoInteres: number
-  salarioDeseado: number
+  rangoSalarioDeseado: number
   titulado: number
   ingles: number
   cvId: number
@@ -94,12 +92,10 @@ export type CandidateCountAggregateOutputType = {
 
 export type CandidateAvgAggregateInputType = {
   id?: true
-  salarioDeseado?: true
 }
 
 export type CandidateSumAggregateInputType = {
   id?: true
-  salarioDeseado?: true
 }
 
 export type CandidateMinAggregateInputType = {
@@ -112,7 +108,7 @@ export type CandidateMinAggregateInputType = {
   ultimoSector?: true
   ultimoPuesto?: true
   puestoInteres?: true
-  salarioDeseado?: true
+  rangoSalarioDeseado?: true
   titulado?: true
   ingles?: true
   cvId?: true
@@ -130,7 +126,7 @@ export type CandidateMaxAggregateInputType = {
   ultimoSector?: true
   ultimoPuesto?: true
   puestoInteres?: true
-  salarioDeseado?: true
+  rangoSalarioDeseado?: true
   titulado?: true
   ingles?: true
   cvId?: true
@@ -148,7 +144,7 @@ export type CandidateCountAggregateInputType = {
   ultimoSector?: true
   ultimoPuesto?: true
   puestoInteres?: true
-  salarioDeseado?: true
+  rangoSalarioDeseado?: true
   titulado?: true
   ingles?: true
   cvId?: true
@@ -253,7 +249,7 @@ export type CandidateGroupByOutputType = {
   ultimoSector: string
   ultimoPuesto: string
   puestoInteres: string
-  salarioDeseado: number
+  rangoSalarioDeseado: string
   titulado: boolean
   ingles: $Enums.InglesLevel
   cvId: string | null
@@ -294,7 +290,7 @@ export type CandidateWhereInput = {
   ultimoSector?: Prisma.StringFilter<"Candidate"> | string
   ultimoPuesto?: Prisma.StringFilter<"Candidate"> | string
   puestoInteres?: Prisma.StringFilter<"Candidate"> | string
-  salarioDeseado?: Prisma.IntFilter<"Candidate"> | number
+  rangoSalarioDeseado?: Prisma.StringFilter<"Candidate"> | string
   titulado?: Prisma.BoolFilter<"Candidate"> | boolean
   ingles?: Prisma.EnumInglesLevelFilter<"Candidate"> | $Enums.InglesLevel
   cvId?: Prisma.StringNullableFilter<"Candidate"> | string | null
@@ -313,7 +309,7 @@ export type CandidateOrderByWithRelationInput = {
   ultimoSector?: Prisma.SortOrder
   ultimoPuesto?: Prisma.SortOrder
   puestoInteres?: Prisma.SortOrder
-  salarioDeseado?: Prisma.SortOrder
+  rangoSalarioDeseado?: Prisma.SortOrder
   titulado?: Prisma.SortOrder
   ingles?: Prisma.SortOrder
   cvId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -336,7 +332,7 @@ export type CandidateWhereUniqueInput = Prisma.AtLeast<{
   ultimoSector?: Prisma.StringFilter<"Candidate"> | string
   ultimoPuesto?: Prisma.StringFilter<"Candidate"> | string
   puestoInteres?: Prisma.StringFilter<"Candidate"> | string
-  salarioDeseado?: Prisma.IntFilter<"Candidate"> | number
+  rangoSalarioDeseado?: Prisma.StringFilter<"Candidate"> | string
   titulado?: Prisma.BoolFilter<"Candidate"> | boolean
   ingles?: Prisma.EnumInglesLevelFilter<"Candidate"> | $Enums.InglesLevel
   createdAt?: Prisma.DateTimeFilter<"Candidate"> | Date | string
@@ -354,7 +350,7 @@ export type CandidateOrderByWithAggregationInput = {
   ultimoSector?: Prisma.SortOrder
   ultimoPuesto?: Prisma.SortOrder
   puestoInteres?: Prisma.SortOrder
-  salarioDeseado?: Prisma.SortOrder
+  rangoSalarioDeseado?: Prisma.SortOrder
   titulado?: Prisma.SortOrder
   ingles?: Prisma.SortOrder
   cvId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -380,7 +376,7 @@ export type CandidateScalarWhereWithAggregatesInput = {
   ultimoSector?: Prisma.StringWithAggregatesFilter<"Candidate"> | string
   ultimoPuesto?: Prisma.StringWithAggregatesFilter<"Candidate"> | string
   puestoInteres?: Prisma.StringWithAggregatesFilter<"Candidate"> | string
-  salarioDeseado?: Prisma.IntWithAggregatesFilter<"Candidate"> | number
+  rangoSalarioDeseado?: Prisma.StringWithAggregatesFilter<"Candidate"> | string
   titulado?: Prisma.BoolWithAggregatesFilter<"Candidate"> | boolean
   ingles?: Prisma.EnumInglesLevelWithAggregatesFilter<"Candidate"> | $Enums.InglesLevel
   cvId?: Prisma.StringNullableWithAggregatesFilter<"Candidate"> | string | null
@@ -397,7 +393,7 @@ export type CandidateCreateInput = {
   ultimoSector: string
   ultimoPuesto: string
   puestoInteres: string
-  salarioDeseado: number
+  rangoSalarioDeseado: string
   titulado?: boolean
   ingles?: $Enums.InglesLevel
   createdAt?: Date | string
@@ -415,7 +411,7 @@ export type CandidateUncheckedCreateInput = {
   ultimoSector: string
   ultimoPuesto: string
   puestoInteres: string
-  salarioDeseado: number
+  rangoSalarioDeseado: string
   titulado?: boolean
   ingles?: $Enums.InglesLevel
   cvId?: string | null
@@ -432,7 +428,7 @@ export type CandidateUpdateInput = {
   ultimoSector?: Prisma.StringFieldUpdateOperationsInput | string
   ultimoPuesto?: Prisma.StringFieldUpdateOperationsInput | string
   puestoInteres?: Prisma.StringFieldUpdateOperationsInput | string
-  salarioDeseado?: Prisma.IntFieldUpdateOperationsInput | number
+  rangoSalarioDeseado?: Prisma.StringFieldUpdateOperationsInput | string
   titulado?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ingles?: Prisma.EnumInglesLevelFieldUpdateOperationsInput | $Enums.InglesLevel
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -450,7 +446,7 @@ export type CandidateUncheckedUpdateInput = {
   ultimoSector?: Prisma.StringFieldUpdateOperationsInput | string
   ultimoPuesto?: Prisma.StringFieldUpdateOperationsInput | string
   puestoInteres?: Prisma.StringFieldUpdateOperationsInput | string
-  salarioDeseado?: Prisma.IntFieldUpdateOperationsInput | number
+  rangoSalarioDeseado?: Prisma.StringFieldUpdateOperationsInput | string
   titulado?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ingles?: Prisma.EnumInglesLevelFieldUpdateOperationsInput | $Enums.InglesLevel
   cvId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -468,7 +464,7 @@ export type CandidateCreateManyInput = {
   ultimoSector: string
   ultimoPuesto: string
   puestoInteres: string
-  salarioDeseado: number
+  rangoSalarioDeseado: string
   titulado?: boolean
   ingles?: $Enums.InglesLevel
   cvId?: string | null
@@ -485,7 +481,7 @@ export type CandidateUpdateManyMutationInput = {
   ultimoSector?: Prisma.StringFieldUpdateOperationsInput | string
   ultimoPuesto?: Prisma.StringFieldUpdateOperationsInput | string
   puestoInteres?: Prisma.StringFieldUpdateOperationsInput | string
-  salarioDeseado?: Prisma.IntFieldUpdateOperationsInput | number
+  rangoSalarioDeseado?: Prisma.StringFieldUpdateOperationsInput | string
   titulado?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ingles?: Prisma.EnumInglesLevelFieldUpdateOperationsInput | $Enums.InglesLevel
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -502,7 +498,7 @@ export type CandidateUncheckedUpdateManyInput = {
   ultimoSector?: Prisma.StringFieldUpdateOperationsInput | string
   ultimoPuesto?: Prisma.StringFieldUpdateOperationsInput | string
   puestoInteres?: Prisma.StringFieldUpdateOperationsInput | string
-  salarioDeseado?: Prisma.IntFieldUpdateOperationsInput | number
+  rangoSalarioDeseado?: Prisma.StringFieldUpdateOperationsInput | string
   titulado?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ingles?: Prisma.EnumInglesLevelFieldUpdateOperationsInput | $Enums.InglesLevel
   cvId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -520,7 +516,7 @@ export type CandidateCountOrderByAggregateInput = {
   ultimoSector?: Prisma.SortOrder
   ultimoPuesto?: Prisma.SortOrder
   puestoInteres?: Prisma.SortOrder
-  salarioDeseado?: Prisma.SortOrder
+  rangoSalarioDeseado?: Prisma.SortOrder
   titulado?: Prisma.SortOrder
   ingles?: Prisma.SortOrder
   cvId?: Prisma.SortOrder
@@ -530,7 +526,6 @@ export type CandidateCountOrderByAggregateInput = {
 
 export type CandidateAvgOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  salarioDeseado?: Prisma.SortOrder
 }
 
 export type CandidateMaxOrderByAggregateInput = {
@@ -543,7 +538,7 @@ export type CandidateMaxOrderByAggregateInput = {
   ultimoSector?: Prisma.SortOrder
   ultimoPuesto?: Prisma.SortOrder
   puestoInteres?: Prisma.SortOrder
-  salarioDeseado?: Prisma.SortOrder
+  rangoSalarioDeseado?: Prisma.SortOrder
   titulado?: Prisma.SortOrder
   ingles?: Prisma.SortOrder
   cvId?: Prisma.SortOrder
@@ -561,7 +556,7 @@ export type CandidateMinOrderByAggregateInput = {
   ultimoSector?: Prisma.SortOrder
   ultimoPuesto?: Prisma.SortOrder
   puestoInteres?: Prisma.SortOrder
-  salarioDeseado?: Prisma.SortOrder
+  rangoSalarioDeseado?: Prisma.SortOrder
   titulado?: Prisma.SortOrder
   ingles?: Prisma.SortOrder
   cvId?: Prisma.SortOrder
@@ -571,7 +566,6 @@ export type CandidateMinOrderByAggregateInput = {
 
 export type CandidateSumOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  salarioDeseado?: Prisma.SortOrder
 }
 
 export type CandidateNullableScalarRelationFilter = {
@@ -628,7 +622,7 @@ export type CandidateCreateWithoutCvInput = {
   ultimoSector: string
   ultimoPuesto: string
   puestoInteres: string
-  salarioDeseado: number
+  rangoSalarioDeseado: string
   titulado?: boolean
   ingles?: $Enums.InglesLevel
   createdAt?: Date | string
@@ -645,7 +639,7 @@ export type CandidateUncheckedCreateWithoutCvInput = {
   ultimoSector: string
   ultimoPuesto: string
   puestoInteres: string
-  salarioDeseado: number
+  rangoSalarioDeseado: string
   titulado?: boolean
   ingles?: $Enums.InglesLevel
   createdAt?: Date | string
@@ -677,7 +671,7 @@ export type CandidateUpdateWithoutCvInput = {
   ultimoSector?: Prisma.StringFieldUpdateOperationsInput | string
   ultimoPuesto?: Prisma.StringFieldUpdateOperationsInput | string
   puestoInteres?: Prisma.StringFieldUpdateOperationsInput | string
-  salarioDeseado?: Prisma.IntFieldUpdateOperationsInput | number
+  rangoSalarioDeseado?: Prisma.StringFieldUpdateOperationsInput | string
   titulado?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ingles?: Prisma.EnumInglesLevelFieldUpdateOperationsInput | $Enums.InglesLevel
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -694,7 +688,7 @@ export type CandidateUncheckedUpdateWithoutCvInput = {
   ultimoSector?: Prisma.StringFieldUpdateOperationsInput | string
   ultimoPuesto?: Prisma.StringFieldUpdateOperationsInput | string
   puestoInteres?: Prisma.StringFieldUpdateOperationsInput | string
-  salarioDeseado?: Prisma.IntFieldUpdateOperationsInput | number
+  rangoSalarioDeseado?: Prisma.StringFieldUpdateOperationsInput | string
   titulado?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ingles?: Prisma.EnumInglesLevelFieldUpdateOperationsInput | $Enums.InglesLevel
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -713,7 +707,7 @@ export type CandidateSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   ultimoSector?: boolean
   ultimoPuesto?: boolean
   puestoInteres?: boolean
-  salarioDeseado?: boolean
+  rangoSalarioDeseado?: boolean
   titulado?: boolean
   ingles?: boolean
   cvId?: boolean
@@ -732,7 +726,7 @@ export type CandidateSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   ultimoSector?: boolean
   ultimoPuesto?: boolean
   puestoInteres?: boolean
-  salarioDeseado?: boolean
+  rangoSalarioDeseado?: boolean
   titulado?: boolean
   ingles?: boolean
   cvId?: boolean
@@ -751,7 +745,7 @@ export type CandidateSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   ultimoSector?: boolean
   ultimoPuesto?: boolean
   puestoInteres?: boolean
-  salarioDeseado?: boolean
+  rangoSalarioDeseado?: boolean
   titulado?: boolean
   ingles?: boolean
   cvId?: boolean
@@ -770,7 +764,7 @@ export type CandidateSelectScalar = {
   ultimoSector?: boolean
   ultimoPuesto?: boolean
   puestoInteres?: boolean
-  salarioDeseado?: boolean
+  rangoSalarioDeseado?: boolean
   titulado?: boolean
   ingles?: boolean
   cvId?: boolean
@@ -778,7 +772,7 @@ export type CandidateSelectScalar = {
   updatedAt?: boolean
 }
 
-export type CandidateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nombre" | "municipioAlcaldia" | "ciudad" | "telefono" | "correo" | "ultimoSector" | "ultimoPuesto" | "puestoInteres" | "salarioDeseado" | "titulado" | "ingles" | "cvId" | "createdAt" | "updatedAt", ExtArgs["result"]["candidate"]>
+export type CandidateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nombre" | "municipioAlcaldia" | "ciudad" | "telefono" | "correo" | "ultimoSector" | "ultimoPuesto" | "puestoInteres" | "rangoSalarioDeseado" | "titulado" | "ingles" | "cvId" | "createdAt" | "updatedAt", ExtArgs["result"]["candidate"]>
 export type CandidateInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   cv?: boolean | Prisma.Candidate$cvArgs<ExtArgs>
 }
@@ -804,7 +798,7 @@ export type $CandidatePayload<ExtArgs extends runtime.Types.Extensions.InternalA
     ultimoSector: string
     ultimoPuesto: string
     puestoInteres: string
-    salarioDeseado: number
+    rangoSalarioDeseado: string
     titulado: boolean
     ingles: $Enums.InglesLevel
     cvId: string | null
@@ -1243,7 +1237,7 @@ export interface CandidateFieldRefs {
   readonly ultimoSector: Prisma.FieldRef<"Candidate", 'String'>
   readonly ultimoPuesto: Prisma.FieldRef<"Candidate", 'String'>
   readonly puestoInteres: Prisma.FieldRef<"Candidate", 'String'>
-  readonly salarioDeseado: Prisma.FieldRef<"Candidate", 'Int'>
+  readonly rangoSalarioDeseado: Prisma.FieldRef<"Candidate", 'String'>
   readonly titulado: Prisma.FieldRef<"Candidate", 'Boolean'>
   readonly ingles: Prisma.FieldRef<"Candidate", 'InglesLevel'>
   readonly cvId: Prisma.FieldRef<"Candidate", 'String'>

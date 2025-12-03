@@ -33,12 +33,12 @@ export const candidateFormPart1Schema = z.object({
   correo: z
     .string()
     .min(1, "El correo electrónico es requerido")
-    .email("Por favor ingresa un correo electrónico válido (ejemplo: nombre@dominio.com)")
+    .email(
+      "Por favor ingresa un correo electrónico válido (ejemplo: nombre@dominio.com)"
+    )
     .max(255, "El correo electrónico no puede exceder 255 caracteres")
     .toLowerCase(),
-  ultimoSector: z
-    .string()
-    .min(1, "El sector de experiencia es requerido"),
+  ultimoSector: z.string().min(1, "El sector de experiencia es requerido"),
 });
 
 // Schema para la segunda parte del formulario
@@ -53,11 +53,20 @@ export const candidateFormPart2Schema = z.object({
     .min(1, "El puesto de interés es requerido")
     .min(2, "El puesto de interés debe tener al menos 2 caracteres")
     .max(200, "El puesto de interés no puede exceder 200 caracteres"),
-  salarioDeseado: z
-    .number("El salario debe ser un número válido")
-    .int("El salario debe ser un número entero (sin decimales)")
-    .min(0, "El salario no puede ser un número negativo")
-    .max(10000000, "El salario no puede exceder $10,000,000 MXN"),
+  rangoSalarioDeseado: z.enum(
+    [
+      "10 a 20",
+      "20 a 30",
+      "30 a 40",
+      "40 a 50",
+      "50 a 75",
+      "75 a 100",
+      "mas de 100",
+    ],
+    {
+      message: "Debes seleccionar un rango de salario válido",
+    }
+  ),
   titulado: z.enum(["Sí", "No"], {
     message: "Debes indicar si estás titulado",
   }),

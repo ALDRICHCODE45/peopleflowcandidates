@@ -25,7 +25,6 @@ import { ZodError } from "zod";
 import { UploadCV } from "../components/UploadCV";
 import {
   Dialog,
-  DialogPopup,
   DialogTrigger,
   DialogFooter,
   DialogHeader,
@@ -36,18 +35,39 @@ import {
 } from "@/core/components/shadcn/dialog";
 import { useCvUpload } from "../hooks/useCvUpload";
 
-const sectoresExperiencia = [
-  "Tecnología",
-  "Finanzas",
-  "Salud",
+const sectoresExperiencia: string[] = [
+  "Arte y diseño",
+  "Atención a clientes - Call Center",
+  "Ciencias sociales - Humanidades",
+  "Comunicación y creatividad",
+  "Construcción - Inmobiliaria - Arquitectura",
+  "Contabilidad - Finanzas",
+  "Deportes - Salud - Belleza",
+  "Derecho y leyes",
   "Educación",
-  "Manufactura",
-  "Retail",
-  "Consultoría",
-  "Marketing",
-  "Recursos Humanos",
-  "Operaciones",
-  "Otro",
+  "Ingeniería",
+  "Logística - Transporte - Distribución - Almacén",
+  "Manufactura - Producción - Operación",
+  "Mercadotecnia - Publicidad - Relaciones Públicas",
+  "Minería - Energía - Recursos Naturales",
+  "Recursos humanos",
+  "Sector salud",
+  "Seguros y reaseguros",
+  "Servicios generales - Oficios - Seguridad",
+  "Tecnologías de la Información - Sistemas",
+  "Turismo - Hospitalidad - Gastronomía",
+  "Ventas",
+  "Veterinaria - Agricultura",
+];
+
+const rangoSalarioEsperado: string[] = [
+  "10 a 20",
+  "20 a 30",
+  "30 a 40",
+  "40 a 50",
+  "50 a 75",
+  "75 a 100",
+  "mas de 100",
 ];
 
 export default function CandidateForm() {
@@ -76,7 +96,7 @@ export default function CandidateForm() {
       ultimoSector: "",
       ultimoPuesto: "",
       puestoInteres: "",
-      salarioDeseado: 0,
+      rangoSalarioDeseado: "",
       titulado: "No",
       ingles: "No",
     },
@@ -104,7 +124,7 @@ export default function CandidateForm() {
         // Enviar el formulario a la base de datos con el ID del CV
         const result: SubmitCandidateFormResult = await submitCandidateForm(
           validatedData,
-          uploadedFileId,
+          uploadedFileId
         );
 
         if (result.success) {
@@ -150,7 +170,7 @@ export default function CandidateForm() {
               "ultimoSector",
               "ultimoPuesto",
               "puestoInteres",
-              "salarioDeseado",
+              "rangoSalarioDeseado",
               "titulado",
               "ingles",
             ] as const;
@@ -165,25 +185,25 @@ export default function CandidateForm() {
                 (prev) => ({
                   ...prev,
                   errorMap: { onSubmit: issue.message },
-                }),
+                })
               );
             }
           });
 
           if (!hasFieldErrors) {
             toast.error(
-              "Por favor verifica que todos los campos estén completos y sean válidos.",
+              "Por favor verifica que todos los campos estén completos y sean válidos."
             );
           } else {
             toast.error(
-              "Por favor corrige los errores en el formulario antes de continuar.",
+              "Por favor corrige los errores en el formulario antes de continuar."
             );
             // Navegar a la parte del formulario donde está el primer error
             const firstErrorField = error.issues[0]?.path[0] as string;
             const part2Fields = [
               "ultimoPuesto",
               "puestoInteres",
-              "salarioDeseado",
+              "rangoSalarioDeseado",
               "titulado",
               "ingles",
             ];
@@ -199,11 +219,11 @@ export default function CandidateForm() {
         } else if (error instanceof Error) {
           toast.error(
             error.message ||
-              "Ocurrió un error al enviar el formulario. Por favor intenta de nuevo.",
+              "Ocurrió un error al enviar el formulario. Por favor intenta de nuevo."
           );
         } else {
           toast.error(
-            "Ocurrió un error inesperado. Por favor intenta de nuevo o contacta con soporte.",
+            "Ocurrió un error inesperado. Por favor intenta de nuevo o contacta con soporte."
           );
         }
       } finally {
@@ -271,7 +291,10 @@ export default function CandidateForm() {
 
   return (
     <>
-      <section id="contact" className="flex flex-col items-center mt-12 md:mt-20 mb-12 md:mb-20">
+      <section
+        id="contact"
+        className="flex flex-col items-center mt-12 md:mt-20 mb-12 md:mb-20"
+      >
         <motion.div
           className="relative max-w-3xl w-full mx-auto"
           initial={{ opacity: 0, y: 50 }}
@@ -328,7 +351,7 @@ export default function CandidateForm() {
                         onClick={handleCvContinue}
                         className="bg-indigo-600 hover:bg-indigo-700 text-white border-indigo-600 w-full sm:w-auto"
                       >
-                        Continuar con tus datos
+                        continuar para subir tu cv
                         <ArrowRight className="size-4" />
                       </Button>
                     </div>
@@ -349,10 +372,11 @@ export default function CandidateForm() {
                         Paso 1
                       </p>
                       <h2 className="text-xl md:text-2xl lg:text-3xl font-semibold mb-2 bg-gradient-to-r from-white to-[#b6abff] text-transparent bg-clip-text">
-                        Cuéntanos sobre ti
+                        Llena tu ficha
                       </h2>
                       <p className="text-slate-400 text-sm md:text-base">
-                        Llena los siguientes datos para poder subir tu cv.
+                        Complementa tus datos con los que tu futuro empleador te
+                        podra contactar.
                       </p>
                     </div>
 
@@ -424,7 +448,7 @@ export default function CandidateForm() {
                               htmlFor={field.name}
                               className="text-slate-200"
                             >
-                              Ciudad *
+                              Estado *
                             </Label>
                             <Input
                               id={field.name}
@@ -435,7 +459,7 @@ export default function CandidateForm() {
                               }
                               onBlur={field.handleBlur}
                               className="bg-slate-900/50 border-slate-600 text-white placeholder:text-slate-500 focus-visible:border-indigo-400 focus-visible:ring-indigo-400/20"
-                              placeholder="Ej: Ciudad de México"
+                              placeholder="Ej: CDMX"
                               aria-invalid={field.state.meta.errors.length > 0}
                             />
                             {field.state.meta.errors.length > 0 && (
@@ -466,7 +490,7 @@ export default function CandidateForm() {
                               }
                               onBlur={field.handleBlur}
                               className="bg-slate-900/50 border-slate-600 text-white placeholder:text-slate-500 focus-visible:border-indigo-400 focus-visible:ring-indigo-400/20"
-                              placeholder="+52 55 1234 5678"
+                              placeholder="55 1234 5678"
                               aria-invalid={field.state.meta.errors.length > 0}
                             />
                             {field.state.meta.errors.length > 0 && (
@@ -599,7 +623,8 @@ export default function CandidateForm() {
                         ¡Ya casi terminamos! Solo unos cuantos datos más
                       </h3>
                       <p className="text-slate-400 text-sm md:text-base">
-                        Información sobre tu experiencia profesional
+                        Solo unos cuantos datos mas para ubicar tu perfil en el
+                        mejor empleo.
                       </p>
                     </motion.div>
 
@@ -664,38 +689,50 @@ export default function CandidateForm() {
                         )}
                       </form.Field>
 
-                      <form.Field name="salarioDeseado">
+                      <form.Field name="rangoSalarioDeseado">
                         {(field) => (
-                          <div className="space-y-2">
-                            <Label
-                              htmlFor={field.name}
-                              className="text-slate-200"
-                            >
-                              Salario deseado (MXN) *
-                            </Label>
-                            <Input
-                              id={field.name}
-                              name={field.name}
-                              type="number"
-                              value={field.state.value || ""}
-                              onChange={(e) =>
-                                field.handleChange(
-                                  e.target.value
-                                    ? parseFloat(e.target.value)
-                                    : 0,
-                                )
-                              }
-                              onBlur={field.handleBlur}
-                              className="bg-slate-900/50 border-slate-600 text-white placeholder:text-slate-500 focus-visible:border-indigo-400 focus-visible:ring-indigo-400/20"
-                              placeholder="50000"
-                              aria-invalid={field.state.meta.errors.length > 0}
-                            />
-                            {field.state.meta.errors.length > 0 && (
-                              <p className="text-red-400 text-xs">
-                                {field.state.meta.errors[0]}
-                              </p>
-                            )}
-                          </div>
+                          <>
+                            <div className="space-y-2">
+                              <Label
+                                htmlFor={field.name}
+                                className="text-slate-200"
+                              >
+                                Salario neto deseado *
+                              </Label>
+                              <Select
+                                value={field.state.value}
+                                onValueChange={(value) =>
+                                  field.handleChange(value)
+                                }
+                              >
+                                <SelectTrigger
+                                  id={field.name}
+                                  className="bg-slate-900/50 border-slate-600 text-white focus:border-indigo-400 focus:ring-indigo-400/20"
+                                  aria-invalid={
+                                    field.state.meta.errors.length > 0
+                                  }
+                                >
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent className="bg-slate-900 border-slate-600">
+                                  {rangoSalarioEsperado.map((salario) => (
+                                    <SelectItem
+                                      value={salario}
+                                      key={salario}
+                                      className="text-white focus:bg-indigo-600/20 hover:text-white"
+                                    >
+                                      {salario}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                              {field.state.meta.errors.length > 0 && (
+                                <p className="text-red-400 text-xs">
+                                  {field.state.meta.errors[0]}
+                                </p>
+                              )}
+                            </div>
+                          </>
                         )}
                       </form.Field>
 
@@ -760,7 +797,7 @@ export default function CandidateForm() {
                               value={field.state.value}
                               onValueChange={(value) =>
                                 field.handleChange(
-                                  value as "Avanzado" | "Intermedio" | "No",
+                                  value as "Avanzado" | "Intermedio" | "No"
                                 )
                               }
                             >
@@ -776,19 +813,19 @@ export default function CandidateForm() {
                               <SelectContent className="bg-slate-900 border-slate-600">
                                 <SelectItem
                                   value="Avanzado"
-                                  className="text-white focus:bg-indigo-600/20"
+                                  className="text-white hover:text-white focus:bg-indigo-600/20"
                                 >
                                   Avanzado
                                 </SelectItem>
                                 <SelectItem
                                   value="Intermedio"
-                                  className="text-white focus:bg-indigo-600/20"
+                                  className="text-white hover:text-white focus:bg-indigo-600/20"
                                 >
                                   Intermedio
                                 </SelectItem>
                                 <SelectItem
                                   value="No"
-                                  className="text-white focus:bg-indigo-600/20"
+                                  className="text-white hover:text-white focus:bg-indigo-600/20"
                                 >
                                   No
                                 </SelectItem>
@@ -828,16 +865,16 @@ export default function CandidateForm() {
             </form>
           </div>
         </motion.div>
-      </section>
-
-      <Dialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
-        <DialogPopup>
-          <DialogContent className="relative overflow-hidden border border-indigo-900 bg-gradient-to-br from-[#401B98]/80 to-[#180027]/90 text-white shadow-2xl">
-            <div className="absolute pointer-events-none -top-10 -left-10 size-60 bg-gradient-to-br from-[#536DFF]/40 to-[#4F39F6]/60 blur-[120px]" />
-            <div className="absolute pointer-events-none -bottom-10 -right-5 size-56 bg-gradient-to-br from-[#536DFF]/40 to-[#4F39F6]/60 blur-[140px]" />
+        <Dialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
+          <DialogContent
+            className="overflow-hidden border border-indigo-900 text-white shadow-2xl z-[100]"
+            style={{
+              background: "linear-gradient(to bottom right, #401B98, #180027)",
+            }}
+          >
             <DialogHeader className="relative z-10 space-y-2 text-center">
               <DialogTitle className="text-xl md:text-2xl lg:text-3xl font-semibold bg-gradient-to-r from-white to-[#b6abff] text-transparent bg-clip-text px-2">
-                ¡Felicidades! Ya formas parte de People Flow Club
+                ¡Felicidades! Ya formas parte de People Flow
               </DialogTitle>
               <DialogDescription className="text-indigo-100/80 text-sm md:text-base px-2">
                 Recibimos tu información y comenzaremos a buscar la posición que
@@ -848,14 +885,16 @@ export default function CandidateForm() {
               Te escribiremos muy pronto para contarte los siguientes pasos y
               compartirte oportunidades alineadas a tus metas profesionales.
             </div>
+            <DialogFooter className="border-t border-white/10 bg-slate-900/40 px-6 py-4">
+              <DialogClose asChild>
+                <Button className="inline-flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-indigo-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">
+                  Cerrar y seguir explorando
+                </Button>
+              </DialogClose>
+            </DialogFooter>
           </DialogContent>
-          <DialogFooter className="border-t border-white/10 bg-slate-900/40 px-6 py-4">
-            <DialogClose className="inline-flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-indigo-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">
-              Cerrar y seguir explorando
-            </DialogClose>
-          </DialogFooter>
-        </DialogPopup>
-      </Dialog>
+        </Dialog>
+      </section>
     </>
   );
 }

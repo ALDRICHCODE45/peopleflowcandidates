@@ -43,7 +43,7 @@ export async function submitCandidateForm(
       ultimoSector: validatedData.ultimoSector.trim(),
       ultimoPuesto: validatedData.ultimoPuesto.trim(),
       puestoInteres: validatedData.puestoInteres.trim(),
-      salarioDeseado: validatedData.salarioDeseado,
+      rangoSalarioDeseado: validatedData.rangoSalarioDeseado,
       titulado: validatedData.titulado === "Sí",
       ingles: validatedData.ingles,
       cvId: cvId || undefined,

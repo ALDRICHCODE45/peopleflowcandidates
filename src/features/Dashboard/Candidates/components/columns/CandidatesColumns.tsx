@@ -78,11 +78,11 @@ export const CandidatesColumns: ColumnDef<Candidate>[] = [
   },
   {
     header: "Salario Deseado",
-    accessorKey: "salarioDeseado",
+    accessorKey: "rangoSalarioDeseado",
     cell: ({ row }) => {
-      const salario_deseado = row.original.salarioDeseado;
+      const rango_salario_deseado = row.original.rangoSalarioDeseado;
 
-      return <div className="text-sm truncate">{salario_deseado}</div>;
+      return <div className="text-sm truncate">{rango_salario_deseado}</div>;
     },
     size: 10,
   },
