@@ -16,12 +16,13 @@ import {
 } from "@/core/components/shadcn/select";
 import {
   candidateFormPart1Schema,
+  candidateFormPart2Schema,
   candidateFormCompleteSchema,
 } from "../schemas/candidateFormSchema";
 import { submitCandidateForm } from "../actions/submitCandidateForm";
 import { toast } from "sonner";
 import type { SubmitCandidateFormResult } from "../actions/submitCandidateForm";
-import { ZodError } from "zod";
+import { ZodError, z } from "zod";
 import { UploadCV } from "../components/UploadCV";
 import {
   Dialog,
@@ -69,6 +70,17 @@ const rangoSalarioEsperado: string[] = [
   "75 a 100",
   "mas de 100",
 ];
+
+// Helper function to create validators from Zod schemas
+const createZodValidator = (schema: z.ZodTypeAny) => {
+  return ({ value }: { value: unknown }) => {
+    const result = schema.safeParse(value);
+    if (!result.success) {
+      return result.error.issues[0]?.message || "Valor inválido";
+    }
+    return undefined;
+  };
+};
 
 export default function CandidateForm() {
   const [currentPart, setCurrentPart] = useState<0 | 1 | 2>(0);
@@ -260,7 +272,7 @@ export default function CandidateForm() {
   };
 
   const handleContinue = async () => {
-    // Validar parte 1 antes de continuar
+    // Validar todos los campos de la parte 1 antes de continuar
     const part1Data = {
       nombre: form.state.values.nombre,
       municipioAlcaldia: form.state.values.municipioAlcaldia,
@@ -271,10 +283,43 @@ export default function CandidateForm() {
     };
 
     const result = candidateFormPart1Schema.safeParse(part1Data);
-    if (result.success) {
-      setCurrentPart(2);
+
+    if (!result.success) {
+      // Validar todos los campos para mostrar errores
+      await form.validateAllFields("change");
+
+      // Establecer errores específicos en cada campo
+      result.error.issues.forEach((issue) => {
+        const fieldName = issue.path[0] as string;
+        const validFields = [
+          "nombre",
+          "municipioAlcaldia",
+          "ciudad",
+          "telefono",
+          "correo",
+          "ultimoSector",
+        ] as const;
+
+        if (
+          fieldName &&
+          validFields.includes(fieldName as (typeof validFields)[number])
+        ) {
+          form.setFieldMeta(
+            fieldName as (typeof validFields)[number],
+            (prev) => ({
+              ...prev,
+              errorMap: { onChange: issue.message },
+            })
+          );
+        }
+      });
+
+      toast.error("Por favor corrige los errores antes de continuar.");
+      return;
     }
-    // Si hay errores, se mostrarán automáticamente por la validación del formulario
+
+    // Si todo está válido, continuar a la parte 2
+    setCurrentPart(2);
   };
 
   const handleBack = () => {
@@ -381,7 +426,17 @@ export default function CandidateForm() {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <form.Field name="nombre">
+                      <form.Field
+                        name="nombre"
+                        validators={{
+                          onChange: createZodValidator(
+                            candidateFormPart1Schema.shape.nombre
+                          ),
+                          onBlur: createZodValidator(
+                            candidateFormPart1Schema.shape.nombre
+                          ),
+                        }}
+                      >
                         {(field) => (
                           <div className="space-y-2 md:col-span-2">
                             <Label
@@ -411,7 +466,17 @@ export default function CandidateForm() {
                         )}
                       </form.Field>
 
-                      <form.Field name="municipioAlcaldia">
+                      <form.Field
+                        name="municipioAlcaldia"
+                        validators={{
+                          onChange: createZodValidator(
+                            candidateFormPart1Schema.shape.municipioAlcaldia
+                          ),
+                          onBlur: createZodValidator(
+                            candidateFormPart1Schema.shape.municipioAlcaldia
+                          ),
+                        }}
+                      >
                         {(field) => (
                           <div className="space-y-2">
                             <Label
@@ -441,7 +506,17 @@ export default function CandidateForm() {
                         )}
                       </form.Field>
 
-                      <form.Field name="ciudad">
+                      <form.Field
+                        name="ciudad"
+                        validators={{
+                          onChange: createZodValidator(
+                            candidateFormPart1Schema.shape.ciudad
+                          ),
+                          onBlur: createZodValidator(
+                            candidateFormPart1Schema.shape.ciudad
+                          ),
+                        }}
+                      >
                         {(field) => (
                           <div className="space-y-2">
                             <Label
@@ -471,7 +546,17 @@ export default function CandidateForm() {
                         )}
                       </form.Field>
 
-                      <form.Field name="telefono">
+                      <form.Field
+                        name="telefono"
+                        validators={{
+                          onChange: createZodValidator(
+                            candidateFormPart1Schema.shape.telefono
+                          ),
+                          onBlur: createZodValidator(
+                            candidateFormPart1Schema.shape.telefono
+                          ),
+                        }}
+                      >
                         {(field) => (
                           <div className="space-y-2">
                             <Label
@@ -502,7 +587,17 @@ export default function CandidateForm() {
                         )}
                       </form.Field>
 
-                      <form.Field name="correo">
+                      <form.Field
+                        name="correo"
+                        validators={{
+                          onChange: createZodValidator(
+                            candidateFormPart1Schema.shape.correo
+                          ),
+                          onBlur: createZodValidator(
+                            candidateFormPart1Schema.shape.correo
+                          ),
+                        }}
+                      >
                         {(field) => (
                           <div className="space-y-2">
                             <Label
@@ -533,7 +628,17 @@ export default function CandidateForm() {
                         )}
                       </form.Field>
 
-                      <form.Field name="ultimoSector">
+                      <form.Field
+                        name="ultimoSector"
+                        validators={{
+                          onChange: createZodValidator(
+                            candidateFormPart1Schema.shape.ultimoSector
+                          ),
+                          onBlur: createZodValidator(
+                            candidateFormPart1Schema.shape.ultimoSector
+                          ),
+                        }}
+                      >
                         {(field) => (
                           <div className="space-y-2 md:col-span-2">
                             <Label
@@ -547,6 +652,11 @@ export default function CandidateForm() {
                               onValueChange={(value) =>
                                 field.handleChange(value)
                               }
+                              onOpenChange={(open) => {
+                                if (!open) {
+                                  field.handleBlur();
+                                }
+                              }}
                             >
                               <SelectTrigger
                                 id={field.name}
@@ -629,7 +739,17 @@ export default function CandidateForm() {
                     </motion.div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <form.Field name="ultimoPuesto">
+                      <form.Field
+                        name="ultimoPuesto"
+                        validators={{
+                          onChange: createZodValidator(
+                            candidateFormPart2Schema.shape.ultimoPuesto
+                          ),
+                          onBlur: createZodValidator(
+                            candidateFormPart2Schema.shape.ultimoPuesto
+                          ),
+                        }}
+                      >
                         {(field) => (
                           <div className="space-y-2">
                             <Label
@@ -659,7 +779,17 @@ export default function CandidateForm() {
                         )}
                       </form.Field>
 
-                      <form.Field name="puestoInteres">
+                      <form.Field
+                        name="puestoInteres"
+                        validators={{
+                          onChange: createZodValidator(
+                            candidateFormPart2Schema.shape.puestoInteres
+                          ),
+                          onBlur: createZodValidator(
+                            candidateFormPart2Schema.shape.puestoInteres
+                          ),
+                        }}
+                      >
                         {(field) => (
                           <div className="space-y-2">
                             <Label
@@ -689,7 +819,17 @@ export default function CandidateForm() {
                         )}
                       </form.Field>
 
-                      <form.Field name="rangoSalarioDeseado">
+                      <form.Field
+                        name="rangoSalarioDeseado"
+                        validators={{
+                          onChange: createZodValidator(
+                            candidateFormPart2Schema.shape.rangoSalarioDeseado
+                          ),
+                          onBlur: createZodValidator(
+                            candidateFormPart2Schema.shape.rangoSalarioDeseado
+                          ),
+                        }}
+                      >
                         {(field) => (
                           <>
                             <div className="space-y-2">
@@ -704,6 +844,11 @@ export default function CandidateForm() {
                                 onValueChange={(value) =>
                                   field.handleChange(value)
                                 }
+                                onOpenChange={(open) => {
+                                  if (!open) {
+                                    field.handleBlur();
+                                  }
+                                }}
                               >
                                 <SelectTrigger
                                   id={field.name}
@@ -736,7 +881,17 @@ export default function CandidateForm() {
                         )}
                       </form.Field>
 
-                      <form.Field name="titulado">
+                      <form.Field
+                        name="titulado"
+                        validators={{
+                          onChange: createZodValidator(
+                            candidateFormPart2Schema.shape.titulado
+                          ),
+                          onBlur: createZodValidator(
+                            candidateFormPart2Schema.shape.titulado
+                          ),
+                        }}
+                      >
                         {(field) => (
                           <div className="space-y-2">
                             <Label
@@ -750,6 +905,11 @@ export default function CandidateForm() {
                               onValueChange={(value) =>
                                 field.handleChange(value as "Sí" | "No")
                               }
+                              onOpenChange={(open) => {
+                                if (!open) {
+                                  field.handleBlur();
+                                }
+                              }}
                             >
                               <SelectTrigger
                                 id={field.name}
@@ -784,7 +944,17 @@ export default function CandidateForm() {
                         )}
                       </form.Field>
 
-                      <form.Field name="ingles">
+                      <form.Field
+                        name="ingles"
+                        validators={{
+                          onChange: createZodValidator(
+                            candidateFormPart2Schema.shape.ingles
+                          ),
+                          onBlur: createZodValidator(
+                            candidateFormPart2Schema.shape.ingles
+                          ),
+                        }}
+                      >
                         {(field) => (
                           <div className="space-y-2 md:col-span-2">
                             <Label
@@ -800,6 +970,11 @@ export default function CandidateForm() {
                                   value as "Avanzado" | "Intermedio" | "No"
                                 )
                               }
+                              onOpenChange={(open) => {
+                                if (!open) {
+                                  field.handleBlur();
+                                }
+                              }}
                             >
                               <SelectTrigger
                                 id={field.name}
