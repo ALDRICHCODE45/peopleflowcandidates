@@ -42,7 +42,7 @@ export default function NuestrosValores() {
         {sectionData.map((data, index) => (
           <motion.div
             key={data.title}
-            className={data.className}
+            className={data.className.replace('border-slate-700', 'border-gray-200')}
             initial={{ y: 150, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
             viewport={{ once: true }}
@@ -54,14 +54,14 @@ export default function NuestrosValores() {
               mass: 1,
             }}
           >
-            <div className="size-10 p-2 bg-indigo-600/20 border border-indigo-600/30 rounded">
+            <div className="size-10 p-2 bg-pink-100 dark:bg-indigo-600/20 border border-pink-200 dark:border-indigo-600/30 rounded">
               <img src={data.image} alt="" />
             </div>
             <div className="mt-5 space-y-2">
-              <h3 className="text-base font-medium text-slate-200">
+              <h3 className="text-base font-medium text-gray-900 dark:text-slate-200">
                 {data.title}
               </h3>
-              <p className="text-sm text-slate-400">{data.description}</p>
+              <p className="text-sm text-gray-600 dark:text-slate-400">{data.description}</p>
             </div>
           </motion.div>
         ))}

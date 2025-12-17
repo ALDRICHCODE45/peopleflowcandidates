@@ -87,7 +87,7 @@ export default function QuienesSomos() {
           return (
             <motion.div
               key={data.title}
-              className={`relative group flex-grow h-[280px] sm:h-[320px] md:h-[360px] lg:h-[420px] w-full rounded-2xl overflow-hidden bg-slate-900/40 border border-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.45)] backdrop-blur ${
+              className={`relative group flex-grow h-[280px] sm:h-[320px] md:h-[360px] lg:h-[420px] w-full rounded-2xl overflow-hidden bg-white dark:bg-slate-900/40 border border-gray-200 dark:border-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.08)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.45)] ${
                 className || ""
               } ${widthClasses} ${
                 !className ? "pointer-events-none" : ""

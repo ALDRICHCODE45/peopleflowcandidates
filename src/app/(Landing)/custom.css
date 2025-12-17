@@ -1,11 +1,13 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --font-poppins: "Poppins", sans-serif;
 }
 
 body {
-  @apply bg-black text-white text-sm font-poppins antialiased;
+  @apply bg-white dark:bg-black text-gray-900 dark:text-white text-sm font-poppins antialiased;
 }
 
 button {

@@ -27,13 +27,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body>
-        <LenisScroll />
-        <Navbar />
-        {children}
-        <Footer />
-      </body>
-    </html>
+    <>
+      <LenisScroll />
+      <Navbar />
+      {children}
+      <Footer />
+    </>
   );
 }

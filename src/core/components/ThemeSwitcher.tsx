@@ -1,6 +1,5 @@
 "use client";
 
-import { useControllableState } from "@radix-ui/react-use-controllable-state";
 import { Monitor, Moon, Sun } from "lucide-react";
 import { motion } from "motion/react";
 import { useCallback, useEffect, useState } from "react";
@@ -34,21 +33,19 @@ export type ThemeSwitcherProps = {
 export const ThemeSwitcher = ({
   value,
   onChange,
-  defaultValue = "system",
+  defaultValue = "dark",
   className,
 }: ThemeSwitcherProps) => {
-  const [theme, setTheme] = useControllableState({
-    defaultProp: defaultValue,
-    prop: value,
-    onChange,
-  });
   const [mounted, setMounted] = useState(false);
+  const currentTheme = value || defaultValue;
 
   const handleThemeClick = useCallback(
     (themeKey: "light" | "dark" | "system") => {
-      setTheme(themeKey);
+      if (onChange) {
+        onChange(themeKey);
+      }
     },
-    [setTheme]
+    [onChange]
   );
 
   // Prevent hydration mismatch
@@ -68,7 +65,7 @@ export const ThemeSwitcher = ({
       )}
     >
       {themes.map(({ key, icon: Icon, label }) => {
-        const isActive = theme === key;
+        const isActive = currentTheme === key;
 
         return (
           <button

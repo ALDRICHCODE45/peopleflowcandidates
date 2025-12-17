@@ -13,7 +13,7 @@ export default function SectionTitle({
   return (
     <div className="flex flex-col items-center mt-20 sm:mt-28">
       <motion.h2
-        className="text-center text-3xl sm:text-4xl font-semibold max-w-2xl px-4"
+        className="text-center text-3xl sm:text-4xl font-semibold max-w-2xl px-4 text-gray-900 dark:text-white"
         initial={{ y: 80, opacity: 0 }}
         whileInView={{ y: 0, opacity: 1 }}
         viewport={{ once: true }}
@@ -21,7 +21,7 @@ export default function SectionTitle({
       >
         {firstPart}{" "}
         <motion.span
-          className="bg-gradient-to-t from-indigo-600 to-black p-1 bg-left inline-block bg-no-repeat"
+          className="bg-gradient-to-t from-pink-500 to-pink-300 dark:from-indigo-600 dark:to-black p-1 bg-left inline-block bg-no-repeat text-pink-600 dark:text-transparent"
           initial={{ backgroundSize: "0% 100%" }}
           whileInView={{ backgroundSize: "100% 100%" }}
           viewport={{ once: true }}
@@ -31,7 +31,7 @@ export default function SectionTitle({
         </motion.span>
       </motion.h2>
       <motion.p
-        className="text-center text-slate-400 text-base sm:text-lg max-w-xl px-6 mt-4"
+        className="text-center text-gray-600 dark:text-gray-400 text-base sm:text-lg max-w-xl px-6 mt-4"
         initial={{ y: 120, opacity: 0 }}
         whileInView={{ y: 0, opacity: 1 }}
         viewport={{ once: true }}
