@@ -39,7 +39,7 @@ export default function HeroSection() {
               gradientTransform="rotate(90 428 292)scale(812)"
             >
               <stop offset=".63" stopColor="#7C3AED" stopOpacity="0" />
-              <stop offset="1" stopColor="#7C3AED" stopOpacity="0.08" />
+              <stop offset="1" stopColor="#7C3AED" stopOpacity="0.15" />
             </radialGradient>
           </defs>
         </motion.svg>
