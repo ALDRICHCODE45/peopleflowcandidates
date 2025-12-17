@@ -3,7 +3,8 @@
 import { useForm } from "@tanstack/react-form";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, ArrowLeft, AlertCircle } from "lucide-react";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
+import { useTheme } from "next-themes";
 import { Button } from "@/core/components/shadcn/button";
 import { Input } from "@/core/components/shadcn/input";
 import { Label } from "@/core/components/shadcn/label";
@@ -83,21 +84,35 @@ const createZodValidator = (schema: z.ZodTypeAny) => {
 };
 
 // Clase base para inputs
-const baseInputClass = "bg-slate-900/50 border-slate-600 text-white placeholder:text-slate-500 focus-visible:border-indigo-400 focus-visible:ring-indigo-400/20";
-const errorInputClass = "bg-slate-900/50 border-red-500 text-white placeholder:text-slate-500 focus-visible:border-red-400 focus-visible:ring-red-400/20 ring-1 ring-red-500/50";
+const baseInputClass =
+  "bg-white dark:bg-slate-900/50 border-gray-300 dark:border-slate-600 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-slate-500 focus-visible:border-purple-500 dark:focus-visible:border-indigo-400 focus-visible:ring-purple-500/20 dark:focus-visible:ring-indigo-400/20";
+const errorInputClass =
+  "bg-white dark:bg-slate-900/50 border-red-500 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-slate-500 focus-visible:border-red-500 dark:focus-visible:border-red-400 focus-visible:ring-red-500/20 dark:focus-visible:ring-red-400/20 ring-1 ring-red-500/50";
 
 // Clase base para selects
-const baseSelectClass = "bg-slate-900/50 border-slate-600 text-white focus:border-indigo-400 focus:ring-indigo-400/20";
-const errorSelectClass = "bg-slate-900/50 border-red-500 text-white focus:border-red-400 focus:ring-red-400/20 ring-1 ring-red-500/50";
+const baseSelectClass =
+  "bg-white dark:bg-slate-900/50 border-gray-300 dark:border-slate-600 text-gray-900 dark:text-white focus:border-purple-500 dark:focus:border-indigo-400 focus:ring-purple-500/20 dark:focus:ring-indigo-400/20";
+const errorSelectClass =
+  "bg-white dark:bg-slate-900/50 border-red-500 text-gray-900 dark:text-white focus:border-red-500 dark:focus:border-red-400 focus:ring-red-500/20 dark:focus:ring-red-400/20 ring-1 ring-red-500/50";
 
 export default function CandidateForm() {
+  const { resolvedTheme } = useTheme();
   const [currentPart, setCurrentPart] = useState<0 | 1 | 2>(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [cvFiles, setCvFiles] = useState<File[]>([]);
   const [showSuccessDialog, setShowSuccessDialog] = useState<boolean>(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [formErrors, setFormErrors] = useState<string[]>([]);
+  const [mounted, setMounted] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Si no está montado aún, asumimos dark mode (defaultTheme es "dark")
+  // Esto previene el flash de estilos incorrectos
+  const isDark = !mounted ? true : resolvedTheme === "dark";
 
   // Hook para manejar la subida de CV
   const {
@@ -357,7 +372,9 @@ export default function CandidateForm() {
       }
 
       toast.error(
-        `Hay ${errors.length} campo${errors.length > 1 ? "s" : ""} con errores. Por favor corrígelos para continuar.`
+        `Hay ${errors.length} campo${
+          errors.length > 1 ? "s" : ""
+        } con errores. Por favor corrígelos para continuar.`
       );
       return;
     }
@@ -392,10 +409,17 @@ export default function CandidateForm() {
           viewport={{ once: true }}
           transition={{ type: "spring", stiffness: 320, damping: 70, mass: 1 }}
         >
-          <div className="absolute pointer-events-none top-10 -z-1 left-20 size-64 bg-gradient-to-br from-[#536DFF] to-[#4F39F6]/60 blur-[180px]"></div>
-          <div className="absolute pointer-events-none bottom-10 -z-1 right-20 size-64 bg-gradient-to-br from-[#536DFF] to-[#4F39F6]/60 blur-[180px]"></div>
+          {/* Gradientes de fondo para modo claro */}
+          <div className="absolute pointer-events-none top-10 -z-1 left-20 size-64 bg-gradient-to-br from-purple-200 to-purple-100/60 dark:from-[#536DFF] dark:to-[#4F39F6]/60 blur-[180px] opacity-40 dark:opacity-100"></div>
+          <div className="absolute pointer-events-none bottom-10 -z-1 right-20 size-64 bg-gradient-to-br from-purple-200 to-purple-100/60 dark:from-[#536DFF] dark:to-[#4F39F6]/60 blur-[180px] opacity-40 dark:opacity-100"></div>
 
-          <div className="relative border border-indigo-900 bg-gradient-to-br from-[#401B98]/5 to-[#180027]/10 rounded-2xl md:rounded-3xl p-4 md:p-6 lg:p-10 text-white">
+          <div
+            className={`relative rounded-2xl md:rounded-3xl p-4 md:p-6 lg:p-10 border shadow-lg ${
+              isDark
+                ? "border-indigo-900 bg-gradient-to-br from-[#401B98]/5 to-[#180027]/10 text-white shadow-none"
+                : "border-gray-200 bg-white text-gray-900"
+            }`}
+          >
             <form
               ref={formRef}
               onSubmit={(e) => {
@@ -410,19 +434,19 @@ export default function CandidateForm() {
                     initial={{ opacity: 0, height: 0, marginBottom: 0 }}
                     animate={{ opacity: 1, height: "auto", marginBottom: 24 }}
                     exit={{ opacity: 0, height: 0, marginBottom: 0 }}
-                    className="bg-red-500/10 border border-red-500/50 rounded-lg p-4 overflow-hidden"
+                    className="bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/50 rounded-lg p-4 overflow-hidden"
                   >
                     <div className="flex items-start gap-3">
-                      <AlertCircle className="size-5 text-red-400 flex-shrink-0 mt-0.5" />
+                      <AlertCircle className="size-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
                       <div className="flex-1">
-                        <p className="text-red-400 font-medium text-sm mb-2">
+                        <p className="text-red-600 dark:text-red-400 font-medium text-sm mb-2">
                           Por favor corrige los siguientes errores:
                         </p>
                         <ul className="space-y-1">
                           {formErrors.map((error, index) => (
                             <li
                               key={index}
-                              className="text-red-300/80 text-xs"
+                              className="text-red-700 dark:text-red-300/80 text-xs"
                             >
                               • {error}
                             </li>
@@ -444,13 +468,13 @@ export default function CandidateForm() {
                     className="space-y-6"
                   >
                     <div className="mb-6">
-                      <p className="text-indigo-200 text-xs uppercase tracking-[0.4em] mb-2">
+                      <p className="text-purple-600 dark:text-indigo-200 text-xs uppercase tracking-[0.4em] mb-2 font-medium">
                         Paso 0
                       </p>
-                      <h2 className="text-xl md:text-2xl font-semibold mb-3 bg-gradient-to-r from-white to-[#b6abff] text-transparent bg-clip-text">
+                      <h2 className="text-xl md:text-2xl font-semibold mb-3 text-gray-900 dark:bg-gradient-to-r dark:from-white dark:to-[#b6abff] dark:text-transparent dark:bg-clip-text">
                         Comienza la busqueda de tu trabajo ideal.
                       </h2>
-                      <p className="text-slate-400 text-sm md:text-base">
+                      <p className="text-gray-600 dark:text-slate-400 text-sm md:text-base">
                         Empecemos cargando tu CV para compartirnos tu
                         experiencia profesional.
                       </p>
@@ -470,7 +494,7 @@ export default function CandidateForm() {
                       <Button
                         type="button"
                         onClick={handleCvContinue}
-                        className="bg-indigo-600 hover:bg-indigo-700 text-white border-indigo-600 w-full sm:w-auto"
+                        className="bg-purple-600 hover:bg-purple-700 dark:bg-indigo-600 dark:hover:bg-indigo-700 text-white border-purple-600 dark:border-indigo-600 w-full sm:w-auto"
                       >
                         continuar para subir tu cv
                         <ArrowRight className="size-4" />
@@ -489,13 +513,13 @@ export default function CandidateForm() {
                     className="space-y-6"
                   >
                     <div className="mb-6">
-                      <p className="text-indigo-200 text-xs uppercase tracking-[0.4em] mb-2">
+                      <p className="text-purple-600 dark:text-indigo-200 text-xs uppercase tracking-[0.4em] mb-2 font-medium">
                         Paso 1
                       </p>
-                      <h2 className="text-xl md:text-2xl lg:text-3xl font-semibold mb-2 bg-gradient-to-r from-white to-[#b6abff] text-transparent bg-clip-text">
+                      <h2 className="text-xl md:text-2xl lg:text-3xl font-semibold mb-2 text-gray-900 dark:bg-gradient-to-r dark:from-white dark:to-[#b6abff] dark:text-transparent dark:bg-clip-text">
                         Llena tu ficha
                       </h2>
-                      <p className="text-slate-400 text-sm md:text-base">
+                      <p className="text-gray-600 dark:text-slate-400 text-sm md:text-base">
                         Complementa tus datos con los que tu futuro empleador te
                         podra contactar.
                       </p>
@@ -517,7 +541,11 @@ export default function CandidateForm() {
                           <div className="space-y-2 md:col-span-2">
                             <Label
                               htmlFor={field.name}
-                              className={field.state.meta.errors.length > 0 ? "text-red-400" : "text-slate-200"}
+                              className={
+                                field.state.meta.errors.length > 0
+                                  ? "text-red-600 dark:text-red-400"
+                                  : "text-gray-700 dark:text-slate-200"
+                              }
                             >
                               Nombre completo *
                             </Label>
@@ -529,12 +557,16 @@ export default function CandidateForm() {
                                 field.handleChange(e.target.value)
                               }
                               onBlur={field.handleBlur}
-                              className={field.state.meta.errors.length > 0 ? errorInputClass : baseInputClass}
+                              className={
+                                field.state.meta.errors.length > 0
+                                  ? errorInputClass
+                                  : baseInputClass
+                              }
                               placeholder="Tu nombre completo"
                               aria-invalid={field.state.meta.errors.length > 0}
                             />
                             {field.state.meta.errors.length > 0 && (
-                              <p className="text-red-400 text-sm flex items-center gap-1">
+                              <p className="text-red-600 dark:text-red-400 text-sm flex items-center gap-1">
                                 <AlertCircle className="size-3" />
                                 {field.state.meta.errors[0]}
                               </p>
@@ -558,7 +590,11 @@ export default function CandidateForm() {
                           <div className="space-y-2">
                             <Label
                               htmlFor={field.name}
-                              className={field.state.meta.errors.length > 0 ? "text-red-400" : "text-slate-200"}
+                              className={
+                                field.state.meta.errors.length > 0
+                                  ? "text-red-600 dark:text-red-400"
+                                  : "text-gray-700 dark:text-slate-200"
+                              }
                             >
                               Municipio o Alcaldía *
                             </Label>
@@ -570,12 +606,16 @@ export default function CandidateForm() {
                                 field.handleChange(e.target.value)
                               }
                               onBlur={field.handleBlur}
-                              className={field.state.meta.errors.length > 0 ? errorInputClass : baseInputClass}
+                              className={
+                                field.state.meta.errors.length > 0
+                                  ? errorInputClass
+                                  : baseInputClass
+                              }
                               placeholder="Ej: Benito Juárez"
                               aria-invalid={field.state.meta.errors.length > 0}
                             />
                             {field.state.meta.errors.length > 0 && (
-                              <p className="text-red-400 text-sm flex items-center gap-1">
+                              <p className="text-red-600 dark:text-red-400 text-sm flex items-center gap-1">
                                 <AlertCircle className="size-3" />
                                 {field.state.meta.errors[0]}
                               </p>
@@ -599,7 +639,11 @@ export default function CandidateForm() {
                           <div className="space-y-2">
                             <Label
                               htmlFor={field.name}
-                              className={field.state.meta.errors.length > 0 ? "text-red-400" : "text-slate-200"}
+                              className={
+                                field.state.meta.errors.length > 0
+                                  ? "text-red-600 dark:text-red-400"
+                                  : "text-gray-700 dark:text-slate-200"
+                              }
                             >
                               Estado *
                             </Label>
@@ -611,12 +655,16 @@ export default function CandidateForm() {
                                 field.handleChange(e.target.value)
                               }
                               onBlur={field.handleBlur}
-                              className={field.state.meta.errors.length > 0 ? errorInputClass : baseInputClass}
+                              className={
+                                field.state.meta.errors.length > 0
+                                  ? errorInputClass
+                                  : baseInputClass
+                              }
                               placeholder="Ej: CDMX"
                               aria-invalid={field.state.meta.errors.length > 0}
                             />
                             {field.state.meta.errors.length > 0 && (
-                              <p className="text-red-400 text-sm flex items-center gap-1">
+                              <p className="text-red-600 dark:text-red-400 text-sm flex items-center gap-1">
                                 <AlertCircle className="size-3" />
                                 {field.state.meta.errors[0]}
                               </p>
@@ -640,7 +688,11 @@ export default function CandidateForm() {
                           <div className="space-y-2">
                             <Label
                               htmlFor={field.name}
-                              className={field.state.meta.errors.length > 0 ? "text-red-400" : "text-slate-200"}
+                              className={
+                                field.state.meta.errors.length > 0
+                                  ? "text-red-600 dark:text-red-400"
+                                  : "text-gray-700 dark:text-slate-200"
+                              }
                             >
                               Teléfono *
                             </Label>
@@ -653,12 +705,16 @@ export default function CandidateForm() {
                                 field.handleChange(e.target.value)
                               }
                               onBlur={field.handleBlur}
-                              className={field.state.meta.errors.length > 0 ? errorInputClass : baseInputClass}
+                              className={
+                                field.state.meta.errors.length > 0
+                                  ? errorInputClass
+                                  : baseInputClass
+                              }
                               placeholder="55 1234 5678"
                               aria-invalid={field.state.meta.errors.length > 0}
                             />
                             {field.state.meta.errors.length > 0 && (
-                              <p className="text-red-400 text-sm flex items-center gap-1">
+                              <p className="text-red-600 dark:text-red-400 text-sm flex items-center gap-1">
                                 <AlertCircle className="size-3" />
                                 {field.state.meta.errors[0]}
                               </p>
@@ -682,7 +738,11 @@ export default function CandidateForm() {
                           <div className="space-y-2">
                             <Label
                               htmlFor={field.name}
-                              className={field.state.meta.errors.length > 0 ? "text-red-400" : "text-slate-200"}
+                              className={
+                                field.state.meta.errors.length > 0
+                                  ? "text-red-600 dark:text-red-400"
+                                  : "text-gray-700 dark:text-slate-200"
+                              }
                             >
                               Correo electrónico *
                             </Label>
@@ -695,12 +755,16 @@ export default function CandidateForm() {
                                 field.handleChange(e.target.value)
                               }
                               onBlur={field.handleBlur}
-                              className={field.state.meta.errors.length > 0 ? errorInputClass : baseInputClass}
+                              className={
+                                field.state.meta.errors.length > 0
+                                  ? errorInputClass
+                                  : baseInputClass
+                              }
                               placeholder="tu@email.com"
                               aria-invalid={field.state.meta.errors.length > 0}
                             />
                             {field.state.meta.errors.length > 0 && (
-                              <p className="text-red-400 text-sm flex items-center gap-1">
+                              <p className="text-red-600 dark:text-red-400 text-sm flex items-center gap-1">
                                 <AlertCircle className="size-3" />
                                 {field.state.meta.errors[0]}
                               </p>
@@ -724,7 +788,11 @@ export default function CandidateForm() {
                           <div className="space-y-2 md:col-span-2">
                             <Label
                               htmlFor={field.name}
-                              className={field.state.meta.errors.length > 0 ? "text-red-400" : "text-slate-200"}
+                              className={
+                                field.state.meta.errors.length > 0
+                                  ? "text-red-600 dark:text-red-400"
+                                  : "text-gray-700 dark:text-slate-200"
+                              }
                             >
                               Último sector de experiencia *
                             </Label>
@@ -742,19 +810,23 @@ export default function CandidateForm() {
                             >
                               <SelectTrigger
                                 id={field.name}
-                                className={field.state.meta.errors.length > 0 ? errorSelectClass : baseSelectClass}
+                                className={
+                                  field.state.meta.errors.length > 0
+                                    ? errorSelectClass
+                                    : baseSelectClass
+                                }
                                 aria-invalid={
                                   field.state.meta.errors.length > 0
                                 }
                               >
                                 <SelectValue />
                               </SelectTrigger>
-                              <SelectContent className="bg-slate-900 border-slate-600">
+                              <SelectContent className="bg-white dark:bg-slate-900 border-gray-200 dark:border-slate-600">
                                 {sectoresExperiencia.map((sector) => (
                                   <SelectItem
                                     key={sector}
                                     value={sector}
-                                    className="text-white focus:bg-indigo-600/20 hover:text-white"
+                                    className="text-gray-900 dark:text-white focus:bg-purple-50 dark:focus:bg-indigo-600/20 hover:bg-purple-50 dark:hover:bg-indigo-600/20"
                                   >
                                     {sector}
                                   </SelectItem>
@@ -762,7 +834,7 @@ export default function CandidateForm() {
                               </SelectContent>
                             </Select>
                             {field.state.meta.errors.length > 0 && (
-                              <p className="text-red-400 text-sm flex items-center gap-1">
+                              <p className="text-red-600 dark:text-red-400 text-sm flex items-center gap-1">
                                 <AlertCircle className="size-3" />
                                 {field.state.meta.errors[0]}
                               </p>
@@ -777,7 +849,7 @@ export default function CandidateForm() {
                         type="button"
                         variant="outline"
                         onClick={handleBack}
-                        className="border-slate-400 hover:text-gray-50 text-black hover:bg-white/10 w-full sm:w-auto order-2 sm:order-1"
+                        className="border-gray-300 dark:border-slate-400 hover:text-gray-900 dark:hover:text-gray-50 text-gray-700 dark:text-black hover:bg-gray-50 dark:hover:bg-white/10 w-full sm:w-auto order-2 sm:order-1"
                       >
                         <ArrowLeft className="size-4" />
                         Atrás
@@ -785,7 +857,7 @@ export default function CandidateForm() {
                       <Button
                         type="button"
                         onClick={handleContinue}
-                        className="bg-indigo-600 hover:bg-indigo-700 text-white border-indigo-600 w-full sm:w-auto order-1 sm:order-2"
+                        className="bg-purple-600 hover:bg-purple-700 dark:bg-indigo-600 dark:hover:bg-indigo-700 text-white border-purple-600 dark:border-indigo-600 w-full sm:w-auto order-1 sm:order-2"
                       >
                         Continuar
                         <ArrowRight className="size-4" />
@@ -809,13 +881,13 @@ export default function CandidateForm() {
                       transition={{ delay: 0.2 }}
                       className="mb-6"
                     >
-                      <p className="text-indigo-200 text-xs uppercase tracking-[0.4em] mb-2">
+                      <p className="text-purple-600 dark:text-indigo-200 text-xs uppercase tracking-[0.4em] mb-2 font-medium">
                         Paso 2
                       </p>
-                      <h3 className="text-lg md:text-xl lg:text-2xl font-semibold mb-2 text-indigo-300">
+                      <h3 className="text-lg md:text-xl lg:text-2xl font-semibold mb-2 text-gray-900 dark:text-indigo-300">
                         ¡Ya casi terminamos! Solo unos cuantos datos más
                       </h3>
-                      <p className="text-slate-400 text-sm md:text-base">
+                      <p className="text-gray-600 dark:text-slate-400 text-sm md:text-base">
                         Solo unos cuantos datos mas para ubicar tu perfil en el
                         mejor empleo.
                       </p>
@@ -837,7 +909,11 @@ export default function CandidateForm() {
                           <div className="space-y-2">
                             <Label
                               htmlFor={field.name}
-                              className={field.state.meta.errors.length > 0 ? "text-red-400" : "text-slate-200"}
+                              className={
+                                field.state.meta.errors.length > 0
+                                  ? "text-red-600 dark:text-red-400"
+                                  : "text-gray-700 dark:text-slate-200"
+                              }
                             >
                               Último puesto *
                             </Label>
@@ -849,12 +925,16 @@ export default function CandidateForm() {
                                 field.handleChange(e.target.value)
                               }
                               onBlur={field.handleBlur}
-                              className={field.state.meta.errors.length > 0 ? errorInputClass : baseInputClass}
+                              className={
+                                field.state.meta.errors.length > 0
+                                  ? errorInputClass
+                                  : baseInputClass
+                              }
                               placeholder="Ej: Senior Developer"
                               aria-invalid={field.state.meta.errors.length > 0}
                             />
                             {field.state.meta.errors.length > 0 && (
-                              <p className="text-red-400 text-sm flex items-center gap-1">
+                              <p className="text-red-600 dark:text-red-400 text-sm flex items-center gap-1">
                                 <AlertCircle className="size-3" />
                                 {field.state.meta.errors[0]}
                               </p>
@@ -878,7 +958,11 @@ export default function CandidateForm() {
                           <div className="space-y-2">
                             <Label
                               htmlFor={field.name}
-                              className={field.state.meta.errors.length > 0 ? "text-red-400" : "text-slate-200"}
+                              className={
+                                field.state.meta.errors.length > 0
+                                  ? "text-red-600 dark:text-red-400"
+                                  : "text-gray-700 dark:text-slate-200"
+                              }
                             >
                               Puesto de interés *
                             </Label>
@@ -890,12 +974,16 @@ export default function CandidateForm() {
                                 field.handleChange(e.target.value)
                               }
                               onBlur={field.handleBlur}
-                              className={field.state.meta.errors.length > 0 ? errorInputClass : baseInputClass}
+                              className={
+                                field.state.meta.errors.length > 0
+                                  ? errorInputClass
+                                  : baseInputClass
+                              }
                               placeholder="Ej: Tech Lead"
                               aria-invalid={field.state.meta.errors.length > 0}
                             />
                             {field.state.meta.errors.length > 0 && (
-                              <p className="text-red-400 text-sm flex items-center gap-1">
+                              <p className="text-red-600 dark:text-red-400 text-sm flex items-center gap-1">
                                 <AlertCircle className="size-3" />
                                 {field.state.meta.errors[0]}
                               </p>
@@ -919,7 +1007,11 @@ export default function CandidateForm() {
                           <div className="space-y-2">
                             <Label
                               htmlFor={field.name}
-                              className={field.state.meta.errors.length > 0 ? "text-red-400" : "text-slate-200"}
+                              className={
+                                field.state.meta.errors.length > 0
+                                  ? "text-red-600 dark:text-red-400"
+                                  : "text-gray-700 dark:text-slate-200"
+                              }
                             >
                               Salario neto deseado *
                             </Label>
@@ -937,19 +1029,23 @@ export default function CandidateForm() {
                             >
                               <SelectTrigger
                                 id={field.name}
-                                className={field.state.meta.errors.length > 0 ? errorSelectClass : baseSelectClass}
+                                className={
+                                  field.state.meta.errors.length > 0
+                                    ? errorSelectClass
+                                    : baseSelectClass
+                                }
                                 aria-invalid={
                                   field.state.meta.errors.length > 0
                                 }
                               >
                                 <SelectValue />
                               </SelectTrigger>
-                              <SelectContent className="bg-slate-900 border-slate-600">
+                              <SelectContent className="bg-white dark:bg-slate-900 border-gray-200 dark:border-slate-600">
                                 {rangoSalarioEsperado.map((salario) => (
                                   <SelectItem
                                     value={salario}
                                     key={salario}
-                                    className="text-white focus:bg-indigo-600/20 hover:text-white"
+                                    className="text-gray-900 dark:text-white focus:bg-purple-50 dark:focus:bg-indigo-600/20 hover:bg-purple-50 dark:hover:bg-indigo-600/20"
                                   >
                                     {salario}
                                   </SelectItem>
@@ -957,7 +1053,7 @@ export default function CandidateForm() {
                               </SelectContent>
                             </Select>
                             {field.state.meta.errors.length > 0 && (
-                              <p className="text-red-400 text-sm flex items-center gap-1">
+                              <p className="text-red-600 dark:text-red-400 text-sm flex items-center gap-1">
                                 <AlertCircle className="size-3" />
                                 {field.state.meta.errors[0]}
                               </p>
@@ -981,7 +1077,11 @@ export default function CandidateForm() {
                           <div className="space-y-2">
                             <Label
                               htmlFor={field.name}
-                              className={field.state.meta.errors.length > 0 ? "text-red-400" : "text-slate-200"}
+                              className={
+                                field.state.meta.errors.length > 0
+                                  ? "text-red-600 dark:text-red-400"
+                                  : "text-gray-700 dark:text-slate-200"
+                              }
                             >
                               ¿Estás titulado? *
                             </Label>
@@ -999,30 +1099,34 @@ export default function CandidateForm() {
                             >
                               <SelectTrigger
                                 id={field.name}
-                                className={field.state.meta.errors.length > 0 ? errorSelectClass : baseSelectClass}
+                                className={
+                                  field.state.meta.errors.length > 0
+                                    ? errorSelectClass
+                                    : baseSelectClass
+                                }
                                 aria-invalid={
                                   field.state.meta.errors.length > 0
                                 }
                               >
                                 <SelectValue />
                               </SelectTrigger>
-                              <SelectContent className="bg-slate-900 border-slate-600">
+                              <SelectContent className="bg-white dark:bg-slate-900 border-gray-200 dark:border-slate-600">
                                 <SelectItem
                                   value="Sí"
-                                  className="text-white focus:bg-indigo-600/20 hover:text-white"
+                                  className="text-gray-900 dark:text-white focus:bg-purple-50 dark:focus:bg-indigo-600/20 hover:bg-purple-50 dark:hover:bg-indigo-600/20"
                                 >
                                   Sí
                                 </SelectItem>
                                 <SelectItem
                                   value="No"
-                                  className="text-white focus:bg-indigo-600/20 hover:text-white"
+                                  className="text-gray-900 dark:text-white focus:bg-purple-50 dark:focus:bg-indigo-600/20 hover:bg-purple-50 dark:hover:bg-indigo-600/20"
                                 >
                                   No
                                 </SelectItem>
                               </SelectContent>
                             </Select>
                             {field.state.meta.errors.length > 0 && (
-                              <p className="text-red-400 text-sm flex items-center gap-1">
+                              <p className="text-red-600 dark:text-red-400 text-sm flex items-center gap-1">
                                 <AlertCircle className="size-3" />
                                 {field.state.meta.errors[0]}
                               </p>
@@ -1046,7 +1150,11 @@ export default function CandidateForm() {
                           <div className="space-y-2 md:col-span-2">
                             <Label
                               htmlFor={field.name}
-                              className={field.state.meta.errors.length > 0 ? "text-red-400" : "text-slate-200"}
+                              className={
+                                field.state.meta.errors.length > 0
+                                  ? "text-red-600 dark:text-red-400"
+                                  : "text-gray-700 dark:text-slate-200"
+                              }
                             >
                               Nivel de inglés *
                             </Label>
@@ -1066,36 +1174,40 @@ export default function CandidateForm() {
                             >
                               <SelectTrigger
                                 id={field.name}
-                                className={field.state.meta.errors.length > 0 ? errorSelectClass : baseSelectClass}
+                                className={
+                                  field.state.meta.errors.length > 0
+                                    ? errorSelectClass
+                                    : baseSelectClass
+                                }
                                 aria-invalid={
                                   field.state.meta.errors.length > 0
                                 }
                               >
                                 <SelectValue />
                               </SelectTrigger>
-                              <SelectContent className="bg-slate-900 border-slate-600">
+                              <SelectContent className="bg-white dark:bg-slate-900 border-gray-200 dark:border-slate-600">
                                 <SelectItem
                                   value="Avanzado"
-                                  className="text-white hover:text-white focus:bg-indigo-600/20"
+                                  className="text-gray-900 dark:text-white hover:bg-purple-50 dark:hover:bg-indigo-600/20 focus:bg-purple-50 dark:focus:bg-indigo-600/20"
                                 >
                                   Avanzado
                                 </SelectItem>
                                 <SelectItem
                                   value="Intermedio"
-                                  className="text-white hover:text-white focus:bg-indigo-600/20"
+                                  className="text-gray-900 dark:text-white hover:bg-purple-50 dark:hover:bg-indigo-600/20 focus:bg-purple-50 dark:focus:bg-indigo-600/20"
                                 >
                                   Intermedio
                                 </SelectItem>
                                 <SelectItem
                                   value="No"
-                                  className="text-white hover:text-white focus:bg-indigo-600/20"
+                                  className="text-gray-900 dark:text-white hover:bg-purple-50 dark:hover:bg-indigo-600/20 focus:bg-purple-50 dark:focus:bg-indigo-600/20"
                                 >
                                   No
                                 </SelectItem>
                               </SelectContent>
                             </Select>
                             {field.state.meta.errors.length > 0 && (
-                              <p className="text-red-400 text-sm flex items-center gap-1">
+                              <p className="text-red-600 dark:text-red-400 text-sm flex items-center gap-1">
                                 <AlertCircle className="size-3" />
                                 {field.state.meta.errors[0]}
                               </p>
@@ -1110,7 +1222,7 @@ export default function CandidateForm() {
                         type="button"
                         onClick={handleBack}
                         variant="outline"
-                        className="border-slate-400 hover:text-gray-50 text-black hover:bg-white/10 w-full sm:w-auto order-2 sm:order-1"
+                        className="border-gray-300 dark:border-slate-400 hover:text-gray-900 dark:hover:text-gray-50 text-gray-700 dark:text-black hover:bg-gray-50 dark:hover:bg-white/10 w-full sm:w-auto order-2 sm:order-1"
                       >
                         <ArrowLeft className="size-4" />
                         Atrás
@@ -1130,28 +1242,23 @@ export default function CandidateForm() {
           </div>
         </motion.div>
         <Dialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
-          <DialogContent
-            className="overflow-hidden border border-indigo-900 text-white shadow-2xl z-[100]"
-            style={{
-              background: "linear-gradient(to bottom right, #401B98, #180027)",
-            }}
-          >
+          <DialogContent className="overflow-hidden border border-gray-200 dark:border-indigo-900 bg-white dark:bg-gradient-to-br dark:from-[#401B98] dark:to-[#180027] dark:shadow-2xl shadow-xl z-[100]">
             <DialogHeader className="relative z-10 space-y-2 text-center">
-              <DialogTitle className="text-xl md:text-2xl lg:text-3xl font-semibold bg-gradient-to-r from-white to-[#b6abff] text-transparent bg-clip-text px-2">
+              <DialogTitle className="text-xl md:text-2xl lg:text-3xl font-semibold text-gray-900 dark:bg-gradient-to-r dark:from-white dark:to-[#b6abff] dark:text-transparent dark:bg-clip-text px-2">
                 ¡Felicidades! Ya formas parte de People Flow
               </DialogTitle>
-              <DialogDescription className="text-indigo-100/80 text-sm md:text-base px-2">
+              <DialogDescription className="text-gray-600 dark:text-indigo-100/80 text-sm md:text-base px-2">
                 Recibimos tu información y comenzaremos a buscar la posición que
                 mejor encaje con tu perfil.
               </DialogDescription>
             </DialogHeader>
-            <div className="relative z-10 mt-6 rounded-2xl border border-white/10 bg-black/10 p-4 text-sm text-indigo-100/70">
+            <div className="relative z-10 mt-6 rounded-2xl border border-gray-200 dark:border-white/10 bg-purple-50 dark:bg-black/10 p-4 text-sm text-gray-700 dark:text-indigo-100/70">
               Te escribiremos muy pronto para contarte los siguientes pasos y
               compartirte oportunidades alineadas a tus metas profesionales.
             </div>
-            <DialogFooter className="border-t border-white/10 bg-slate-900/40 px-6 py-4">
+            <DialogFooter className="border-t border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-slate-900/40 px-6 py-4">
               <DialogClose asChild>
-                <Button className="inline-flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-indigo-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">
+                <Button className="inline-flex w-full items-center justify-center rounded-md border border-transparent bg-purple-600 dark:bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-purple-700 dark:hover:bg-indigo-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 dark:focus-visible:ring-indigo-400">
                   Cerrar y seguir explorando
                 </Button>
               </DialogClose>

@@ -39,7 +39,7 @@ export default function Navbar() {
             width={180}
             height={40}
             alt="logo"
-            className="w-[140px] h-auto md:w-[180px] lg:w-[230px]"
+            className="w-[140px] h-auto md:w-[180px] lg:w-[230px] logo-invert"
           />
         </Link>
 
@@ -48,7 +48,7 @@ export default function Navbar() {
             <Link
               key={link.href}
               href={link.href}
-              className="hover:text-pink-600 dark:hover:text-slate-300 text-gray-700 dark:text-gray-300 transition"
+              className="hover:text-purple-600 dark:hover:text-slate-300 text-gray-700 dark:text-gray-300 transition font-medium"
             >
               {link.text}
             </Link>
@@ -62,7 +62,7 @@ export default function Navbar() {
           </Link>
           <a
             href="#creations"
-            className="hover:bg-pink-50 dark:hover:bg-slate-300/20 transition px-6 py-2 border border-pink-600 dark:border-slate-400 text-pink-600 dark:text-gray-50 rounded-md active:scale-95 inline-block"
+            className="hover:bg-gray-50 dark:hover:bg-slate-300/20 transition px-6 py-2 border border-gray-300 dark:border-slate-400 text-gray-900 dark:text-gray-50 bg-white dark:bg-transparent rounded-md active:scale-95 inline-block font-medium"
           >
             Conoce más
           </a>

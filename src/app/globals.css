@@ -175,3 +175,14 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  /* En modo claro: invierte el logo (blanco→negro) para mejor visibilidad */
+  /* En modo oscuro: mantiene el logo original (blanco) */
+  .logo-invert {
+    filter: invert(1);
+  }
+  .dark .logo-invert {
+    filter: none;
+  }
+}

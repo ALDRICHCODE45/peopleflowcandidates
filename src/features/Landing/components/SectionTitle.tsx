@@ -21,7 +21,7 @@ export default function SectionTitle({
       >
         {firstPart}{" "}
         <motion.span
-          className="bg-gradient-to-t from-pink-500 to-pink-300 dark:from-indigo-600 dark:to-black p-1 bg-left inline-block bg-no-repeat text-pink-600 dark:text-transparent"
+          className="bg-gradient-to-t from-purple-600 to-purple-400 dark:from-indigo-600 dark:to-indigo-800 p-1 bg-left inline-block bg-no-repeat text-white dark:text-white"
           initial={{ backgroundSize: "0% 100%" }}
           whileInView={{ backgroundSize: "100% 100%" }}
           viewport={{ once: true }}

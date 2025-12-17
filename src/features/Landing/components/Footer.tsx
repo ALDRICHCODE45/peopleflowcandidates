@@ -19,7 +19,7 @@ export default function Footer() {
               width={180}
               height={40}
               alt="logo"
-              className="w-[140px] h-auto md:w-[180px] lg:w-[230px]"
+              className="w-[140px] h-auto md:w-[180px] lg:w-[230px] logo-invert"
             />
           </a>
           <p className="text-sm/7 mt-4 md:mt-6 text-gray-600 dark:text-gray-400">
@@ -34,16 +34,28 @@ export default function Footer() {
             <h2 className="font-semibold mb-4 md:mb-5 text-gray-900 dark:text-white">
               Enlaces de interés.
             </h2>
-            <a className="hover:text-pink-600 dark:hover:text-slate-500 transition text-gray-600 dark:text-gray-400" href="#creations">
+            <a
+              className="hover:text-pink-600 dark:hover:text-slate-500 transition text-gray-600 dark:text-gray-400"
+              href="#creations"
+            >
               Sobre nosotros
             </a>
-            <a className="hover:text-pink-600 dark:hover:text-slate-500 transition text-gray-600 dark:text-gray-400" href="#about">
+            <a
+              className="hover:text-pink-600 dark:hover:text-slate-500 transition text-gray-600 dark:text-gray-400"
+              href="#about"
+            >
               Cómo funciona
             </a>
-            <a className="hover:text-pink-600 dark:hover:text-slate-500 transition text-gray-600 dark:text-gray-400" href="#contact">
+            <a
+              className="hover:text-pink-600 dark:hover:text-slate-500 transition text-gray-600 dark:text-gray-400"
+              href="#contact"
+            >
               Contáctanos
             </a>
-            <a className="hover:text-pink-600 dark:hover:text-slate-500 transition text-gray-600 dark:text-gray-400" href="#">
+            <a
+              className="hover:text-pink-600 dark:hover:text-slate-500 transition text-gray-600 dark:text-gray-400"
+              href="#"
+            >
               Política de privacidad
             </a>
           </div>
@@ -51,7 +63,10 @@ export default function Footer() {
       </div>
       <p className="py-4 text-center border-t mt-6 border-gray-200 dark:border-gray-800 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
         Copyright 2025 ©{" "}
-        <a href="#hero" className="hover:text-pink-600 dark:hover:text-slate-300 transition text-gray-900 dark:text-white">
+        <a
+          href="#hero"
+          className="hover:text-pink-600 dark:hover:text-slate-300 transition text-gray-900 dark:text-white"
+        >
           People Flow Candidates
         </a>{" "}
         Todos los derechos reservados.
