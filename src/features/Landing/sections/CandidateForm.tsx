@@ -2,8 +2,8 @@
 
 import { useForm } from "@tanstack/react-form";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowRight, ArrowLeft } from "lucide-react";
-import { useState } from "react";
+import { ArrowRight, ArrowLeft, AlertCircle } from "lucide-react";
+import { useState, useRef } from "react";
 import { Button } from "@/core/components/shadcn/button";
 import { Input } from "@/core/components/shadcn/input";
 import { Label } from "@/core/components/shadcn/label";
@@ -82,12 +82,22 @@ const createZodValidator = (schema: z.ZodTypeAny) => {
   };
 };
 
+// Clase base para inputs
+const baseInputClass = "bg-slate-900/50 border-slate-600 text-white placeholder:text-slate-500 focus-visible:border-indigo-400 focus-visible:ring-indigo-400/20";
+const errorInputClass = "bg-slate-900/50 border-red-500 text-white placeholder:text-slate-500 focus-visible:border-red-400 focus-visible:ring-red-400/20 ring-1 ring-red-500/50";
+
+// Clase base para selects
+const baseSelectClass = "bg-slate-900/50 border-slate-600 text-white focus:border-indigo-400 focus:ring-indigo-400/20";
+const errorSelectClass = "bg-slate-900/50 border-red-500 text-white focus:border-red-400 focus:ring-red-400/20 ring-1 ring-red-500/50";
+
 export default function CandidateForm() {
   const [currentPart, setCurrentPart] = useState<0 | 1 | 2>(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [cvFiles, setCvFiles] = useState<File[]>([]);
   const [showSuccessDialog, setShowSuccessDialog] = useState<boolean>(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
+  const [formErrors, setFormErrors] = useState<string[]>([]);
+  const formRef = useRef<HTMLFormElement>(null);
 
   // Hook para manejar la subida de CV
   const {
@@ -288,6 +298,18 @@ export default function CandidateForm() {
       // Validar todos los campos para mostrar errores
       await form.validateAllFields("change");
 
+      const fieldLabels: Record<string, string> = {
+        nombre: "Nombre completo",
+        municipioAlcaldia: "Municipio o Alcaldía",
+        ciudad: "Estado",
+        telefono: "Teléfono",
+        correo: "Correo electrónico",
+        ultimoSector: "Último sector de experiencia",
+      };
+
+      const errors: string[] = [];
+      let firstErrorField: string | null = null;
+
       // Establecer errores específicos en cada campo
       result.error.issues.forEach((issue) => {
         const fieldName = issue.path[0] as string;
@@ -304,6 +326,10 @@ export default function CandidateForm() {
           fieldName &&
           validFields.includes(fieldName as (typeof validFields)[number])
         ) {
+          if (!firstErrorField) {
+            firstErrorField = fieldName;
+          }
+          errors.push(`${fieldLabels[fieldName]}: ${issue.message}`);
           form.setFieldMeta(
             fieldName as (typeof validFields)[number],
             (prev) => ({
@@ -314,11 +340,30 @@ export default function CandidateForm() {
         }
       });
 
-      toast.error("Por favor corrige los errores antes de continuar.");
+      // Actualizar el estado con los errores encontrados
+      setFormErrors(errors);
+
+      // Scroll y focus al primer campo con error
+      if (firstErrorField && formRef.current) {
+        const errorElement = formRef.current.querySelector(
+          `[name="${firstErrorField}"]`
+        ) as HTMLElement | null;
+        if (errorElement) {
+          errorElement.scrollIntoView({ behavior: "smooth", block: "center" });
+          setTimeout(() => {
+            errorElement.focus();
+          }, 300);
+        }
+      }
+
+      toast.error(
+        `Hay ${errors.length} campo${errors.length > 1 ? "s" : ""} con errores. Por favor corrígelos para continuar.`
+      );
       return;
     }
 
-    // Si todo está válido, continuar a la parte 2
+    // Limpiar errores y continuar a la parte 2
+    setFormErrors([]);
     setCurrentPart(2);
   };
 
@@ -352,11 +397,42 @@ export default function CandidateForm() {
 
           <div className="relative border border-indigo-900 bg-gradient-to-br from-[#401B98]/5 to-[#180027]/10 rounded-2xl md:rounded-3xl p-4 md:p-6 lg:p-10 text-white">
             <form
+              ref={formRef}
               onSubmit={(e) => {
                 e.preventDefault();
                 form.handleSubmit();
               }}
             >
+              {/* Resumen de errores */}
+              <AnimatePresence>
+                {formErrors.length > 0 && currentPart === 1 && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0, marginBottom: 0 }}
+                    animate={{ opacity: 1, height: "auto", marginBottom: 24 }}
+                    exit={{ opacity: 0, height: 0, marginBottom: 0 }}
+                    className="bg-red-500/10 border border-red-500/50 rounded-lg p-4 overflow-hidden"
+                  >
+                    <div className="flex items-start gap-3">
+                      <AlertCircle className="size-5 text-red-400 flex-shrink-0 mt-0.5" />
+                      <div className="flex-1">
+                        <p className="text-red-400 font-medium text-sm mb-2">
+                          Por favor corrige los siguientes errores:
+                        </p>
+                        <ul className="space-y-1">
+                          {formErrors.map((error, index) => (
+                            <li
+                              key={index}
+                              className="text-red-300/80 text-xs"
+                            >
+                              • {error}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
               <AnimatePresence mode="wait">
                 {currentPart === 0 && (
                   <motion.div
@@ -441,7 +517,7 @@ export default function CandidateForm() {
                           <div className="space-y-2 md:col-span-2">
                             <Label
                               htmlFor={field.name}
-                              className="text-slate-200"
+                              className={field.state.meta.errors.length > 0 ? "text-red-400" : "text-slate-200"}
                             >
                               Nombre completo *
                             </Label>
@@ -453,12 +529,13 @@ export default function CandidateForm() {
                                 field.handleChange(e.target.value)
                               }
                               onBlur={field.handleBlur}
-                              className="bg-slate-900/50 border-slate-600 text-white placeholder:text-slate-500 focus-visible:border-indigo-400 focus-visible:ring-indigo-400/20"
+                              className={field.state.meta.errors.length > 0 ? errorInputClass : baseInputClass}
                               placeholder="Tu nombre completo"
                               aria-invalid={field.state.meta.errors.length > 0}
                             />
                             {field.state.meta.errors.length > 0 && (
-                              <p className="text-red-400 text-xs">
+                              <p className="text-red-400 text-sm flex items-center gap-1">
+                                <AlertCircle className="size-3" />
                                 {field.state.meta.errors[0]}
                               </p>
                             )}
@@ -481,7 +558,7 @@ export default function CandidateForm() {
                           <div className="space-y-2">
                             <Label
                               htmlFor={field.name}
-                              className="text-slate-200"
+                              className={field.state.meta.errors.length > 0 ? "text-red-400" : "text-slate-200"}
                             >
                               Municipio o Alcaldía *
                             </Label>
@@ -493,12 +570,13 @@ export default function CandidateForm() {
                                 field.handleChange(e.target.value)
                               }
                               onBlur={field.handleBlur}
-                              className="bg-slate-900/50 border-slate-600 text-white placeholder:text-slate-500 focus-visible:border-indigo-400 focus-visible:ring-indigo-400/20"
+                              className={field.state.meta.errors.length > 0 ? errorInputClass : baseInputClass}
                               placeholder="Ej: Benito Juárez"
                               aria-invalid={field.state.meta.errors.length > 0}
                             />
                             {field.state.meta.errors.length > 0 && (
-                              <p className="text-red-400 text-xs">
+                              <p className="text-red-400 text-sm flex items-center gap-1">
+                                <AlertCircle className="size-3" />
                                 {field.state.meta.errors[0]}
                               </p>
                             )}
@@ -521,7 +599,7 @@ export default function CandidateForm() {
                           <div className="space-y-2">
                             <Label
                               htmlFor={field.name}
-                              className="text-slate-200"
+                              className={field.state.meta.errors.length > 0 ? "text-red-400" : "text-slate-200"}
                             >
                               Estado *
                             </Label>
@@ -533,12 +611,13 @@ export default function CandidateForm() {
                                 field.handleChange(e.target.value)
                               }
                               onBlur={field.handleBlur}
-                              className="bg-slate-900/50 border-slate-600 text-white placeholder:text-slate-500 focus-visible:border-indigo-400 focus-visible:ring-indigo-400/20"
+                              className={field.state.meta.errors.length > 0 ? errorInputClass : baseInputClass}
                               placeholder="Ej: CDMX"
                               aria-invalid={field.state.meta.errors.length > 0}
                             />
                             {field.state.meta.errors.length > 0 && (
-                              <p className="text-red-400 text-xs">
+                              <p className="text-red-400 text-sm flex items-center gap-1">
+                                <AlertCircle className="size-3" />
                                 {field.state.meta.errors[0]}
                               </p>
                             )}
@@ -561,7 +640,7 @@ export default function CandidateForm() {
                           <div className="space-y-2">
                             <Label
                               htmlFor={field.name}
-                              className="text-slate-200"
+                              className={field.state.meta.errors.length > 0 ? "text-red-400" : "text-slate-200"}
                             >
                               Teléfono *
                             </Label>
@@ -574,12 +653,13 @@ export default function CandidateForm() {
                                 field.handleChange(e.target.value)
                               }
                               onBlur={field.handleBlur}
-                              className="bg-slate-900/50 border-slate-600 text-white placeholder:text-slate-500 focus-visible:border-indigo-400 focus-visible:ring-indigo-400/20"
+                              className={field.state.meta.errors.length > 0 ? errorInputClass : baseInputClass}
                               placeholder="55 1234 5678"
                               aria-invalid={field.state.meta.errors.length > 0}
                             />
                             {field.state.meta.errors.length > 0 && (
-                              <p className="text-red-400 text-xs">
+                              <p className="text-red-400 text-sm flex items-center gap-1">
+                                <AlertCircle className="size-3" />
                                 {field.state.meta.errors[0]}
                               </p>
                             )}
@@ -602,7 +682,7 @@ export default function CandidateForm() {
                           <div className="space-y-2">
                             <Label
                               htmlFor={field.name}
-                              className="text-slate-200"
+                              className={field.state.meta.errors.length > 0 ? "text-red-400" : "text-slate-200"}
                             >
                               Correo electrónico *
                             </Label>
@@ -615,12 +695,13 @@ export default function CandidateForm() {
                                 field.handleChange(e.target.value)
                               }
                               onBlur={field.handleBlur}
-                              className="bg-slate-900/50 border-slate-600 text-white placeholder:text-slate-500 focus-visible:border-indigo-400 focus-visible:ring-indigo-400/20"
+                              className={field.state.meta.errors.length > 0 ? errorInputClass : baseInputClass}
                               placeholder="tu@email.com"
                               aria-invalid={field.state.meta.errors.length > 0}
                             />
                             {field.state.meta.errors.length > 0 && (
-                              <p className="text-red-400 text-xs">
+                              <p className="text-red-400 text-sm flex items-center gap-1">
+                                <AlertCircle className="size-3" />
                                 {field.state.meta.errors[0]}
                               </p>
                             )}
@@ -643,11 +724,12 @@ export default function CandidateForm() {
                           <div className="space-y-2 md:col-span-2">
                             <Label
                               htmlFor={field.name}
-                              className="text-slate-200"
+                              className={field.state.meta.errors.length > 0 ? "text-red-400" : "text-slate-200"}
                             >
                               Último sector de experiencia *
                             </Label>
                             <Select
+                              name={field.name}
                               value={field.state.value}
                               onValueChange={(value) =>
                                 field.handleChange(value)
@@ -660,7 +742,7 @@ export default function CandidateForm() {
                             >
                               <SelectTrigger
                                 id={field.name}
-                                className="bg-slate-900/50 border-slate-600 text-white focus:border-indigo-400 focus:ring-indigo-400/20"
+                                className={field.state.meta.errors.length > 0 ? errorSelectClass : baseSelectClass}
                                 aria-invalid={
                                   field.state.meta.errors.length > 0
                                 }
@@ -680,7 +762,8 @@ export default function CandidateForm() {
                               </SelectContent>
                             </Select>
                             {field.state.meta.errors.length > 0 && (
-                              <p className="text-red-400 text-xs">
+                              <p className="text-red-400 text-sm flex items-center gap-1">
+                                <AlertCircle className="size-3" />
                                 {field.state.meta.errors[0]}
                               </p>
                             )}
@@ -754,7 +837,7 @@ export default function CandidateForm() {
                           <div className="space-y-2">
                             <Label
                               htmlFor={field.name}
-                              className="text-slate-200"
+                              className={field.state.meta.errors.length > 0 ? "text-red-400" : "text-slate-200"}
                             >
                               Último puesto *
                             </Label>
@@ -766,12 +849,13 @@ export default function CandidateForm() {
                                 field.handleChange(e.target.value)
                               }
                               onBlur={field.handleBlur}
-                              className="bg-slate-900/50 border-slate-600 text-white placeholder:text-slate-500 focus-visible:border-indigo-400 focus-visible:ring-indigo-400/20"
+                              className={field.state.meta.errors.length > 0 ? errorInputClass : baseInputClass}
                               placeholder="Ej: Senior Developer"
                               aria-invalid={field.state.meta.errors.length > 0}
                             />
                             {field.state.meta.errors.length > 0 && (
-                              <p className="text-red-400 text-xs">
+                              <p className="text-red-400 text-sm flex items-center gap-1">
+                                <AlertCircle className="size-3" />
                                 {field.state.meta.errors[0]}
                               </p>
                             )}
@@ -794,7 +878,7 @@ export default function CandidateForm() {
                           <div className="space-y-2">
                             <Label
                               htmlFor={field.name}
-                              className="text-slate-200"
+                              className={field.state.meta.errors.length > 0 ? "text-red-400" : "text-slate-200"}
                             >
                               Puesto de interés *
                             </Label>
@@ -806,12 +890,13 @@ export default function CandidateForm() {
                                 field.handleChange(e.target.value)
                               }
                               onBlur={field.handleBlur}
-                              className="bg-slate-900/50 border-slate-600 text-white placeholder:text-slate-500 focus-visible:border-indigo-400 focus-visible:ring-indigo-400/20"
+                              className={field.state.meta.errors.length > 0 ? errorInputClass : baseInputClass}
                               placeholder="Ej: Tech Lead"
                               aria-invalid={field.state.meta.errors.length > 0}
                             />
                             {field.state.meta.errors.length > 0 && (
-                              <p className="text-red-400 text-xs">
+                              <p className="text-red-400 text-sm flex items-center gap-1">
+                                <AlertCircle className="size-3" />
                                 {field.state.meta.errors[0]}
                               </p>
                             )}
@@ -831,53 +916,53 @@ export default function CandidateForm() {
                         }}
                       >
                         {(field) => (
-                          <>
-                            <div className="space-y-2">
-                              <Label
-                                htmlFor={field.name}
-                                className="text-slate-200"
-                              >
-                                Salario neto deseado *
-                              </Label>
-                              <Select
-                                value={field.state.value}
-                                onValueChange={(value) =>
-                                  field.handleChange(value)
+                          <div className="space-y-2">
+                            <Label
+                              htmlFor={field.name}
+                              className={field.state.meta.errors.length > 0 ? "text-red-400" : "text-slate-200"}
+                            >
+                              Salario neto deseado *
+                            </Label>
+                            <Select
+                              name={field.name}
+                              value={field.state.value}
+                              onValueChange={(value) =>
+                                field.handleChange(value)
+                              }
+                              onOpenChange={(open) => {
+                                if (!open) {
+                                  field.handleBlur();
                                 }
-                                onOpenChange={(open) => {
-                                  if (!open) {
-                                    field.handleBlur();
-                                  }
-                                }}
+                              }}
+                            >
+                              <SelectTrigger
+                                id={field.name}
+                                className={field.state.meta.errors.length > 0 ? errorSelectClass : baseSelectClass}
+                                aria-invalid={
+                                  field.state.meta.errors.length > 0
+                                }
                               >
-                                <SelectTrigger
-                                  id={field.name}
-                                  className="bg-slate-900/50 border-slate-600 text-white focus:border-indigo-400 focus:ring-indigo-400/20"
-                                  aria-invalid={
-                                    field.state.meta.errors.length > 0
-                                  }
-                                >
-                                  <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent className="bg-slate-900 border-slate-600">
-                                  {rangoSalarioEsperado.map((salario) => (
-                                    <SelectItem
-                                      value={salario}
-                                      key={salario}
-                                      className="text-white focus:bg-indigo-600/20 hover:text-white"
-                                    >
-                                      {salario}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                              {field.state.meta.errors.length > 0 && (
-                                <p className="text-red-400 text-xs">
-                                  {field.state.meta.errors[0]}
-                                </p>
-                              )}
-                            </div>
-                          </>
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent className="bg-slate-900 border-slate-600">
+                                {rangoSalarioEsperado.map((salario) => (
+                                  <SelectItem
+                                    value={salario}
+                                    key={salario}
+                                    className="text-white focus:bg-indigo-600/20 hover:text-white"
+                                  >
+                                    {salario}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            {field.state.meta.errors.length > 0 && (
+                              <p className="text-red-400 text-sm flex items-center gap-1">
+                                <AlertCircle className="size-3" />
+                                {field.state.meta.errors[0]}
+                              </p>
+                            )}
+                          </div>
                         )}
                       </form.Field>
 
@@ -896,11 +981,12 @@ export default function CandidateForm() {
                           <div className="space-y-2">
                             <Label
                               htmlFor={field.name}
-                              className="text-slate-200"
+                              className={field.state.meta.errors.length > 0 ? "text-red-400" : "text-slate-200"}
                             >
                               ¿Estás titulado? *
                             </Label>
                             <Select
+                              name={field.name}
                               value={field.state.value}
                               onValueChange={(value) =>
                                 field.handleChange(value as "Sí" | "No")
@@ -913,7 +999,7 @@ export default function CandidateForm() {
                             >
                               <SelectTrigger
                                 id={field.name}
-                                className="bg-slate-900/50 border-slate-600 text-white focus:border-indigo-400 focus:ring-indigo-400/20"
+                                className={field.state.meta.errors.length > 0 ? errorSelectClass : baseSelectClass}
                                 aria-invalid={
                                   field.state.meta.errors.length > 0
                                 }
@@ -936,7 +1022,8 @@ export default function CandidateForm() {
                               </SelectContent>
                             </Select>
                             {field.state.meta.errors.length > 0 && (
-                              <p className="text-red-400 text-xs">
+                              <p className="text-red-400 text-sm flex items-center gap-1">
+                                <AlertCircle className="size-3" />
                                 {field.state.meta.errors[0]}
                               </p>
                             )}
@@ -959,11 +1046,12 @@ export default function CandidateForm() {
                           <div className="space-y-2 md:col-span-2">
                             <Label
                               htmlFor={field.name}
-                              className="text-slate-200"
+                              className={field.state.meta.errors.length > 0 ? "text-red-400" : "text-slate-200"}
                             >
                               Nivel de inglés *
                             </Label>
                             <Select
+                              name={field.name}
                               value={field.state.value}
                               onValueChange={(value) =>
                                 field.handleChange(
@@ -978,7 +1066,7 @@ export default function CandidateForm() {
                             >
                               <SelectTrigger
                                 id={field.name}
-                                className="bg-slate-900/50 border-slate-600 text-white focus:border-indigo-400 focus:ring-indigo-400/20"
+                                className={field.state.meta.errors.length > 0 ? errorSelectClass : baseSelectClass}
                                 aria-invalid={
                                   field.state.meta.errors.length > 0
                                 }
@@ -1007,7 +1095,8 @@ export default function CandidateForm() {
                               </SelectContent>
                             </Select>
                             {field.state.meta.errors.length > 0 && (
-                              <p className="text-red-400 text-xs">
+                              <p className="text-red-400 text-sm flex items-center gap-1">
+                                <AlertCircle className="size-3" />
                                 {field.state.meta.errors[0]}
                               </p>
                             )}
